@@ -15,12 +15,15 @@ def main():
 
 # Subroutines
 
+"""Function prompts user for input and returns username"""
 def get_username():
       return input("\nWhat is your name?\n")
 
+"""Function prompts user for input and returns favorite color"""
 def get_favcolor():
       return input("\nWhat is your favorite color?\n")
 
+"""Function displays user info"""
 def display_userinfo(name, color):
       print(f'\nThe favorite color for {name} is {color}.')
 
