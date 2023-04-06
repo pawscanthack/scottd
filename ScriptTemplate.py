@@ -1,4 +1,10 @@
 #!/usr/bin/python3
+"""
+Scott Davis
+SEC444
+Bellevue College
+Spring 2023
+"""
 # Description
 """ < 
 Replace the line above with a short description of the script.  Sometimes
@@ -6,7 +12,7 @@ people use multiple lines todescribe the inputs and expected outputs.
 > """
 
 # Versioning
-# Ski-20130930: initial version
+# Scott-20230430: initial version
 """ <
 Replace the line above with the date you finished and your name
 As you revise it, add in more lines with what you changed
