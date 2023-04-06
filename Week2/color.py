@@ -1,8 +1,14 @@
 #!/usr/bin/python3
+"""
+Scott Davis
+SEC444
+Bellevue College
+Spring 2023
+"""
 # A script that will prompt for a user name and then for their favorite color then print out
 
 # Versioning
-# SDavis-20230406: initial version
+# Scott-20230406: initial version
 
 # Set up initial variables and imports
 
