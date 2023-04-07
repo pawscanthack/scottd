@@ -1,0 +1,39 @@
+Enter cd (What directory you are in and what command did you use to find out?)
+/home/ubuntu
+pwd
+Enter cd .. (What directory are you in?)
+/home
+Change to the /etc directory and show me the output of ls deb*?
+debconf.conf  debian_version
+Tell the command you used to find all files ending in conf?
+find . -name "*.conf"
+Pipe the output of the command in step 4 to another command to get a count how many files and tell me the commands you used and the count.
+105
+sudo find . -name "*.conf" | wc -l
+How many lines in the passwd file that have nologin in them?  What command did you use?
+29
+cat passwd | grep nologin | wc -l
+How many lines in the passwd file do not have nologin in them? What command did you use?
+6
+grep -v nologin /etc/passwd | wc -l
+Change to your home directory and create test1 directory.  What command did you use?
+cd ~/..
+mkdir test1
+Create the file test1/file1.  What command did you use?
+touch test1/file1
+Remove the test1 directory with 1 command.  What command did you use?
+rm -rf test1
+What is the command to get help on the 'ls' command?
+ls --help
+man ls
+info ls
+What is the command to see the history of what you typed in the shell?
+history
+What command would only display the change directory commands in history
+history grep cd
+What is different between ls and ls -a, and ls -l commands
+ls -a lists hidden files
+ls -l is long format
+How long has your machine been running?  What command did you use to find this out?
+18:19:44 up 39 min,  1 user,  load average: 0.00, 0.01, 0.00
+uptime
