@@ -13,13 +13,6 @@ Spring 2023
 # Set up initial variables and imports
 import sys
 import datetime
-SITES = ['bhs','ah','lms']
-MAIL_SERVER = 'smtp.google.com'
-""" < 
-Put any global or initial variables here. This is the only place where folks
-should make quick changes to the script such as using a different mail server
-account.  Change/remove the example lines above as needed 
-> """
 
 # Main routine that is called when script is run
 def main():
@@ -44,26 +37,13 @@ def main():
 
     print(calc_future_date(date_obj, int_days))
 
-    
-
-
-  # Get the messages and process them
-""" <
-The functions code goes here. Use comments in the code to explain what
-large blocks of it do or for something you may not remember how it works
-> """
 def calc_future_date(start_date, interval_days):
+    """
+    Function accepts datetime object and integer then returns future date
+    """
     delta = datetime.timedelta(days=interval_days)
     future = start_date + delta
-    return future.date()
-
-
-# Subroutines
-""" <
-The subroutines called by the main function are listed here
-> """
-
-
+    return future.strftime("%m-%d-%Y")
 
 # Run main() if script called directly, else use as a library to be imported
 if __name__ == "__main__":
