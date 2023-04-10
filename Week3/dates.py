@@ -36,13 +36,13 @@ def main():
         sys.exit(1)
 
     try:
-        int_days = sys.argv[2]
+        int_days = int(sys.argv[2])
 
     except Exception as ge:
         print("Error:", ge)
         sys.exit(2)
 
-    print(date_obj, ":", int_days)
+    print(calc_future_date(date_obj, int_days))
 
     
 
@@ -52,6 +52,10 @@ def main():
 The functions code goes here. Use comments in the code to explain what
 large blocks of it do or for something you may not remember how it works
 > """
+def calc_future_date(start_date, interval_days):
+    delta = datetime.timedelta(days=interval_days)
+    future = start_date + delta
+    return future.date()
 
 
 # Subroutines
