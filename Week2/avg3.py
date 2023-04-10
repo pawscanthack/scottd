@@ -15,7 +15,7 @@ import sys
 
 # Main routine that is called when script is run
 def main():
-    """What does this function do"""
+    """Checks for presence of arguments"""
     if len(sys.argv) != 4:
         print("Usage: avg3 [number1] [number2] [number3]")
         sys.exit(1)

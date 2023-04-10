@@ -9,7 +9,7 @@ Spring 2023
 # Script that reads arguments, all positive numbers, on the command line and finds their average to two decimal places
 
 # Versioning
-# Scott-20230430: initial version
+# Scott-20230406: initial version
 
 # Set up initial variables and imports
 import sys
