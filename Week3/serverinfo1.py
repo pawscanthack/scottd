@@ -51,6 +51,7 @@ def main():
     }
 
     # Print the results
+    print()
     for key, value in system_info.items():
         print(f'{key}: {value}')
 
