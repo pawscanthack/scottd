@@ -33,7 +33,7 @@ def main():
     # Gather the data
     system_info = gather_data()
 
-    # Print the results
+    # Print the results to the correct output method
     if output_method == 'screen':
         output_to_screen(system_info)
     elif output_method == 'csv':
@@ -47,6 +47,8 @@ def main():
 # Subroutines
 
 def gather_data():
+    """
+    Function to gather the data and return it as a dictionary"""
      # Retrieve the hostname
     hostname = socket.gethostname()
 
@@ -79,11 +81,13 @@ def gather_data():
     return system_info
 
 def output_to_screen(system_info):
+    """Function to print the data to the screen"""
     print()
     for key, value in system_info.items():
         print(f'{key}: {value}')
 
 def output_to_csv(system_info):
+    """Function to print the data to a CSV file"""
     output_file = get_filename('csv')
      # Write the dictionary to the CSV file
     with open(output_file, 'w', newline='') as csvfile:
@@ -92,13 +96,15 @@ def output_to_csv(system_info):
         writer.writerow(system_info)
 
 def output_to_json(system_info):
+    """Function to print the data to a JSON file"""
     output_file = get_filename('json')
     # Write the dictionary to the JSON file
     with open(output_file, 'w') as jsonfile:
         json.dump(system_info, jsonfile)
-        
+
 
 def get_filename(type):
+    """Function to generate a filename based on the script name and the current date and time"""
     script_name = os.path.splitext(os.path.basename(__file__))[0]
     now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     return f'{script_name}_{now}.{type}'
