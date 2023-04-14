@@ -35,8 +35,14 @@ def main():
     os_type = platform.system()
     os_version = platform.release()
 
-    # Retrieve the number of disks
-    disk_count = str(len(psutil.disk_partitions()))
+    # Get the list of disk partitions
+    partitions = psutil.disk_partitions()
+
+    # Get the list of unique device names
+    devices = set(partition.device for partition in partitions)
+
+    # Count the number of devices
+    num_disks = len(devices)
 
     # Create a dictionary to store the results
     system_info = {
@@ -45,7 +51,7 @@ def main():
         'RAM (GB)': ram_gb,
         'OSType': os_type,
         'OSVersion': os_version,
-        'Disks (Count)': disk_count,
+        'Disks (Count)': num_disks,
         'ip of eth0': ip_address,
         'mac of eth0': mac_address
     }
