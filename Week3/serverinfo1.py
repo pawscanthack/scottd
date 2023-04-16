@@ -9,6 +9,7 @@ Spring 2023
 
 # Versioning
 # Scott-20230412: initial version
+# Scott-20230416: Fixed disk count to use subprocess instead of psutil  (psutil was not workingin AWS) 
 
 # Set up initial variables and imports
 import socket
@@ -16,6 +17,7 @@ import platform
 import psutil
 import netifaces
 import os
+import subprocess
 
 # Main routine that is called when script is run
 def main():
@@ -35,14 +37,9 @@ def main():
     os_type = platform.system()
     os_version = platform.release()
 
-    # Get the list of disk partitions
-    partitions = psutil.disk_partitions()
-
-    # Get the list of unique device names
-    devices = set(partition.device for partition in partitions)
-
-    # Count the number of devices
-    num_disks = len(devices)
+    # Retrieve the number of disks
+    proc = subprocess.run("lsblk | grep disk | wc -l", shell=True, universal_newlines=True, capture_output=True, text=True) 
+    num_disks = proc.stdout.strip()
 
     # Create a dictionary to store the results
     system_info = {
