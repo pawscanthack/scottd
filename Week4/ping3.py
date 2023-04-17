@@ -59,15 +59,18 @@ def ping_from_file(target_file, filename):
                 write_to_csv(filename)
 
 def csv_check():
+    """Function checks for filename argument"""
     if len(sys.argv) == 3:
         return sys.argv[2]
     else:
         return 0
 
 def write_to_csv(filename):
+    """Function writes content to CSV file"""
     with open(filename, 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow(csv_output)
+        csv_writer = csv.writer(csvfile)
+        for row in csv_output:
+            csv_writer.writerow([str(item) for item in row])
     return
 
 
