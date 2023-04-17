@@ -5,9 +5,8 @@ SEC444
 Bellevue College
 Spring 2023
 """
-# a script that will read from a file of computer IPs and names.  It then will ping each one and print the IP or DNS name and the time to ping to the screen
-
-# Scott-20230416: initial version
+# Script accepts a filename, an IP address, or a server name as input, and tests the connectivity to the specified target
+# Scott-20230416: initial version 
 
 # Set up initial variables and imports
 import sys
@@ -15,16 +14,20 @@ from pinglib import pingthis
 
 # Main routine that is called when script is run
 def main():
-    user_file = argument_check()
-    file_check(user_file)
-    # Ping targets from file
-    ping_from_file(user_file)
+    user_input = argument_check()
+    print("IP, TimeToPing (ms)")
+    if file_check(user_input) == 1:
+        ping_from_file(user_input)
+        sys.exit(0)
+    elif file_check(user_input) == 0:
+        result = pingthis(user_input)
+        print(f"{result[0]}, {result[1]}")
 
 # Subroutines
 def argument_check():
     """Function checks for presence of argument and gives usage if argument is missing"""
     if  not len(sys.argv) == 2:
-        print("Usage: ping1.py [file.txt]")
+        print("Usage: ping1.py [file | IP Address | Domain Name]")
         sys.exit(1)
     else:
         return sys.argv[1]
@@ -33,14 +36,12 @@ def file_check(file_name):
     """Function checks if user input is valid filename"""
     try:
         with open(file_name, 'r') as file:
-            return
+            return 1
     except FileNotFoundError:
-        print(f"{file_name} is not a valid file.")
-        exit(1)
+        return 0
 
 def ping_from_file(target_file):
     """Function reads target file, pings targets, and displays results"""
-    print("IP, TimeToPing (ms)")
     with open(target_file, 'r') as file:
         for line in file:
             target = line.strip()
