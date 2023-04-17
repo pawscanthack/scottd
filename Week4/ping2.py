@@ -15,13 +15,13 @@ from pinglib import pingthis
 # Main routine that is called when script is run
 def main():
     user_input = argument_check()
-    print("IP, TimeToPing (ms)")
+    print("IP".ljust(20) + "TimeToPing (ms)")
     if file_check(user_input) == 1:
         ping_from_file(user_input)
         sys.exit(0)
     elif file_check(user_input) == 0:
         result = pingthis(user_input)
-        print(f"{result[0]}, {result[1]}")
+        print(f"{result[0].ljust(20)} {result[1]}")
 
 # Subroutines
 def argument_check():
@@ -46,7 +46,7 @@ def ping_from_file(target_file):
         for line in file:
             target = line.strip()
             result = pingthis(target)
-            print(f"{result[0]}, {result[1]}")
+            print(f"{result[0].ljust(20)} {result[1]}")
 
 # Run main() if script called directly, else use as a library to be imported
 if __name__ == "__main__":
