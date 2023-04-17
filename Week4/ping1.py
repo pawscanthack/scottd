@@ -15,14 +15,10 @@ from pinglib import pingthis
 
 # Main routine that is called when script is run
 def main():
-    target_file = argument_check()
-    print("IP, TimeToPing (ms)")
+    user_file = argument_check()
+    file_check(user_file)
     # Open file and do stuff
-    with open(target_file, 'r') as file:
-        for line in file:
-            target = line.strip()
-            result = pingthis(target)
-            print(f"{result[0]}, {result[1]}")
+    ping_from_file(user_file)
 
 # Subroutines
 def argument_check():
@@ -32,6 +28,23 @@ def argument_check():
         sys.exit(1)
     else:
         return sys.argv[1]
+
+def file_check(file_name):
+    try:
+        with open(file_name, 'r') as file:
+            return
+    except FileNotFoundError:
+        print(f"{file_name} is not a valid file.")
+        exit(1)
+
+def ping_from_file(target_file):
+    """Function reads target file, pings targets, and displays results"""
+    print("IP, TimeToPing (ms)")
+    with open(target_file, 'r') as file:
+        for line in file:
+            target = line.strip()
+            result = pingthis(target)
+            print(f"{result[0]}, {result[1]}")
 
 # Run main() if script called directly, else use as a library to be imported
 if __name__ == "__main__":
