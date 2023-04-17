@@ -20,7 +20,7 @@ csv_output = []
 def main():
     user_input = argument_check()
     filename = csv_check()
-    print("IP, Domain Name, TimeToPing (ms)")
+    print("IP".ljust(20) + "Domain Name".ljust(30) + "TimeToPing (ms)")
     if file_check(user_input) == 1:
         ping_from_file(user_input, filename)
         sys.exit(0)
@@ -29,7 +29,7 @@ def main():
         target_dns = get_domain(result[0])
         ping_result = [result, target_dns]
         csv_output.append(ping_result)
-        print(f"{result[0]}, {target_dns}, {result[1]}")
+        print(f"{result[0].ljust(20)}{target_dns.ljust(30)}{result[1]}")
         if filename != 0:
             write_to_csv(filename)
 
@@ -59,7 +59,7 @@ def ping_from_file(target_file, filename):
             target_dns = get_domain(target)
             ping_result = [result, target_dns]
             csv_output.append(ping_result)
-            print(f"{result[0]}, {target_dns}, {result[1]}")
+            print(f"{result[0].ljust(20)}{target_dns.ljust(30)}{result[1]}")
             if filename != 0:
                 write_to_csv(filename)
 
