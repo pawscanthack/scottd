@@ -69,7 +69,7 @@ def file_output():
     with open(filename, 'w') as file:
         for item in MAC_LIST:
             file.write("%s\n" % item)
-        file.write("Total MAC addresses: %d" % len(MAC_LIST))
+        file.write("Total MAC addresses: %d\n" % len(MAC_LIST))
     print(f'\nOutput saved in {filename}')
     
 
