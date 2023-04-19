@@ -5,7 +5,7 @@ SEC444
 Bellevue College
 Spring 2023
 """
-# Script accepts log file as argument then returns unique mac addresses with device names containing 'iphone' along with the number of unique MAC addresses
+# Script accepts log file as argument then returns top two MAC/IPs by ACK #
 # Returns output to screen and csv
 
 # Versioning
@@ -61,24 +61,29 @@ def process_logfile(logfile):
      
 def screen_output():
     """Function displays output to screen"""
-    #print(CLIENT_DICT)
-    largest_key1 = max(CLIENT_DICT, key=lambda k: CLIENT_DICT[k] or 0)
-    largest_key2 = max((k for k in CLIENT_DICT if k != largest_key1), key=lambda k: CLIENT_DICT[k] or 0)
-    for top in range(2):
-        key, value = sorted(CLIENT_DICT.items(), key=lambda item: item[1], reverse=True)[top]
-    print(f"{key}: {value}")
+    print("\nTop 2 MAC/IP by ACK Requests:\n")
+    print(f"{'MAC Address':<20} {'IP Address':<20} {'ACK Total':<10}")
+    print("-" * 50)
+    top_two = sorted(CLIENT_DICT.items(), key=lambda item: item[1], reverse=True)[:2]
+    for key, value in top_two:
+        mac, ip = key.split(",")
+        print(f"{mac:<20} {ip:<20} {value:<10}")
+
 
 def file_output():
     """Function writes to output to csv file"""
     filename = get_filename()
-    sorted_items = sorted(CLIENT_DICT.items(), key=lambda x: x[1], reverse=True)
-    largest_keys = [sorted_items[0], sorted_items[1]]
+    largest_key1 = max(CLIENT_DICT, key=lambda k: CLIENT_DICT[k] or 0)
+    largest_key2 = max((k for k in CLIENT_DICT if k != largest_key1), key=lambda k: CLIENT_DICT[k] or 0)
     with open(filename, 'w', newline='') as csvfile:
-        csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_NONE, escapechar='\\')
-        csv_writer.writerow(['Key', 'Value'])
-        for key, value in largest_keys:
-            csv_writer.writerow([key, value])
+        csv_writer = csv.writer(csvfile)
+        csv_writer.writerow(['MAC', 'IP', 'ACK TOTAL'])
+        mac1, ip1 = largest_key1.split(',')
+        mac2, ip2 = largest_key2.split(',')
+        csv_writer.writerow([mac1, ip1, CLIENT_DICT[largest_key1]])
+        csv_writer.writerow([mac2, ip2, CLIENT_DICT[largest_key2]])
     print(f'\nOutput saved in {filename}')
+
 
 def get_filename():
     """Function to generate a filename based on the script name and the current date and time"""
