@@ -61,16 +61,24 @@ def process_logfile(logfile):
      
 def screen_output():
     """Function displays output to screen"""
-    print(CLIENT_DICT)
+    #print(CLIENT_DICT)
+    largest_key1 = max(CLIENT_DICT, key=lambda k: CLIENT_DICT[k] or 0)
+    largest_key2 = max((k for k in CLIENT_DICT if k != largest_key1), key=lambda k: CLIENT_DICT[k] or 0)
+    for top in range(2):
+        key, value = sorted(CLIENT_DICT.items(), key=lambda item: item[1], reverse=True)[top]
+    print(f"{key}: {value}")
 
 def file_output():
     """Function writes to output to csv file"""
     filename = get_filename()
-    with open(filename, 'w') as file:
-        for key in CLIENT_DICT:
-            file.write("%s,%s\n"%(key, CLIENT_DICT[key]))
+    sorted_items = sorted(CLIENT_DICT.items(), key=lambda x: x[1], reverse=True)
+    largest_keys = [sorted_items[0], sorted_items[1]]
+    with open(filename, 'w', newline='') as csvfile:
+        csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_NONE, escapechar='\\')
+        csv_writer.writerow(['Key', 'Value'])
+        for key, value in largest_keys:
+            csv_writer.writerow([key, value])
     print(f'\nOutput saved in {filename}')
-    
 
 def get_filename():
     """Function to generate a filename based on the script name and the current date and time"""
@@ -79,7 +87,10 @@ def get_filename():
 
 def ack_check(entry):
     # Return 1 if ack code is present
-    return 1
+    if "DHCPACK" in entry:
+        return 1
+    else:
+        return 0
 
 def extract_key(entry):
     # Return IP-MAC key value
