@@ -83,10 +83,18 @@ def ack_check(entry):
 
 def extract_key(entry):
     # Return IP-MAC key value
-    ip = "1.1.1.1"
-    mac = "BC:5B:D5:DD:F8:12"
-    extracted_key = mac + "," + ip
-    return extracted_key 
+    ip_address_match = re.search("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", entry)
+    mac_address_match = re.search("((?:[\da-fA-F]{2}[:\-]){5}[\da-fA-F]{2})", entry)
+    
+    if ip_address_match and mac_address_match:
+        ip_address = ip_address_match.group()
+        mac_address = mac_address_match.group()
+        extracted_key = mac_address + "," + ip_address
+        return extracted_key
+    else:
+        # Handle the case where a match was not found
+        return None
+
 # Run main() if script called directly, else use as a library to be imported
 if __name__ == "__main__":
         main()
