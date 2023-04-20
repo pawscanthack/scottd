@@ -9,7 +9,7 @@ Spring 2023
 # Returns output to screen and csv
 
 # Versioning
-# Scott-20230418: initial version
+# Scott-20230420: initial version
 
 # Set up initial variables and imports
 import sys
@@ -24,14 +24,10 @@ import time
 DEFAULT_LOG = "dhcpdsmall.log"
 
 # Main routine that is called when script is run
-
-
 def main():
-    # argument_check()
-    # target_file = file_check(sys.argv[1])
-    target_file = "iplist.txt"
-    # log_file = file_check(DEFAULT_LOG)
-    log_file = DEFAULT_LOG
+    argument_check()
+    target_file = file_check(sys.argv[1])
+    log_file = file_check(DEFAULT_LOG)
     ip_dict = build_dict(target_file)
     ip_mac_dict = extract_mac_address(DEFAULT_LOG, ip_dict)
     results_dict = get_vendor(ip_mac_dict)
@@ -41,10 +37,9 @@ def main():
 
 # Subroutines
 def argument_check():
-    # Future feature
     """Function checks for presence of argument and gives usage if argument is missing"""
     if len(sys.argv) == 1:
-        # Feature: accept optional third argument for log file later
+        # Future Feature: accept optional third argument for log file later
         print("Usage: logs3.py [target file]")
         sys.exit(1)
     else:
@@ -71,9 +66,13 @@ def build_dict(targetfile):
 
 
 def extract_mac_address(logfile, target_dict):
+    """Function to get MAC addresses from dictionary of IP addresses and logfile, appending MAC value to IP key in dictionary"""
     with open(logfile, "r") as file:
+        # Iterate through log file by line
         for line in file:
+            # Iterate through dictionary of ip addresses
             for key in target_dict:
+                # Check for IP address in line from log file
                 if key in line:
                     mac_address_match = re.search("((?:[\da-fA-F]{2}[:\-]){5}[\da-fA-F]{2})", line)
                     if mac_address_match:
@@ -83,15 +82,18 @@ def extract_mac_address(logfile, target_dict):
 
 
 def get_vendor(ipmac_dict):
+    """Function to add vendors to dictionary"""
     ip_mac_vendor_dict = ipmac_dict.copy()
+    # Loop through dictionary items adding vendor info
     for ip, (mac, _) in ipmac_dict.items():
         vendor = api_call(mac)
         ip_mac_vendor_dict[ip] = [mac, vendor]
     return ip_mac_vendor_dict
 
 
-
 def api_call(mac):
+    """Function to call macvendor API"""
+    # Necessary delay for free API calls
     delay = .75
     time.sleep(delay)
     url = f"https://api.macvendors.com/{mac}"
@@ -103,14 +105,13 @@ def api_call(mac):
         return "Not Found"
 
 
-
 def screen_output(dict):
-    """Function displays output to screen"""
+    """Function displays disctionary to screen"""
     print()
     header = f"{'IP':<15} {'MAC ADDRESS':<18} {'VENDOR'}"
     print(header)
     print('-' * len(header))
-
+    # Loop through dictionary displaying content to screen
     for key, value in dict.items():
         ip = key
         mac_address = value[0]
@@ -119,21 +120,18 @@ def screen_output(dict):
         print(row)
 
 
-
 def file_output(dict):
-    """Function writes to output to csv file"""
+    """Function writes to dictionary to csv file"""
     filename = get_filename()
     with open(filename, 'w', newline='') as csvfile:
         fieldnames = ['IP', 'MAC ADDRESS', 'VENDOR']
         csv_writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         csv_writer.writeheader()
-
+        # Loop through dictionary writing to csv file
         for key, value in dict.items():
             row_dict = {'IP': key, 'MAC ADDRESS': value[0], 'VENDOR': value[1]}
             csv_writer.writerow(row_dict)
-
     print(f'\nOutput saved in {filename}')
-
 
 
 def get_filename():
