@@ -20,6 +20,7 @@ import csv
 import requests
 import time
 
+
 DEFAULT_LOG = "dhcpdsmall.log"
 
 # Main routine that is called when script is run
