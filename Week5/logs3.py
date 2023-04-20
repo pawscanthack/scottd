@@ -18,6 +18,7 @@ import os
 import re
 import csv
 import requests
+import time
 
 DEFAULT_LOG = "dhcpdsmall.log"
 
@@ -91,6 +92,8 @@ def get_vendor(ipmac_dict):
 
 
 def api_call(mac):
+    delay = 1
+    time.sleep(delay)
     url = f"https://api.macvendors.com/{mac}"
     response = requests.get(url)
     if response.status_code == 200:
