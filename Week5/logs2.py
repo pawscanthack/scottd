@@ -48,7 +48,7 @@ def file_check(file_name):
     
 def process_logfile(logfile):
     """Function iterates through log file"""
-    print("Process Called")
+    # print("Process Called")
     with open(logfile, "r") as in_file:
         for line in in_file:
             ack = ack_check(line)
