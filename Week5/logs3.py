@@ -35,7 +35,7 @@ def main():
     ip_mac_dict = extract_mac_address(DEFAULT_LOG, ip_dict)
     results_dict = get_vendor(ip_mac_dict)
     screen_output(results_dict)
-    # file_output(result_dict)
+    file_output(results_dict)
 
 
 # Subroutines
@@ -70,7 +70,7 @@ def build_dict(targetfile):
 
 
 def extract_mac_address(logfile, target_dict):
-    print("extract_mac_address called")
+    print("extract_mac_address() called")
     with open(logfile, "r") as file:
         for line in file:
             for key in target_dict:
@@ -113,10 +113,16 @@ def file_output(dict):
     """Function writes to output to csv file"""
     filename = get_filename()
     with open(filename, 'w', newline='') as csvfile:
-        # FIX: Write dict to csv
-        csv_writer = csv.writer(csvfile)
-        csv_writer.writerow(['IP', 'MAC ADDRESS', 'VENDOR'])
+        fieldnames = ['IP', 'MAC ADDRESS', 'VENDOR']
+        csv_writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        csv_writer.writeheader()
+
+        for key, value in dict.items():
+            row_dict = {'IP': key, 'MAC ADDRESS': value[0], 'VENDOR': value[1]}
+            csv_writer.writerow(row_dict)
+
     print(f'\nOutput saved in {filename}')
+
 
 
 def get_filename():
