@@ -40,6 +40,7 @@ def main():
 
 # Subroutines
 def argument_check():
+    # Future feature
     """Function checks for presence of argument and gives usage if argument is missing"""
     if len(sys.argv) == 1:
         # Feature: accept optional third argument for log file later
@@ -60,7 +61,6 @@ def file_check(file_name):
 
 def build_dict(targetfile):
     """Function creates dictionary of ip addresses from file"""
-    print("build_dict() Called")
     results = {}
     with open(targetfile) as tf:
         content = tf.read().splitlines()
@@ -70,7 +70,6 @@ def build_dict(targetfile):
 
 
 def extract_mac_address(logfile, target_dict):
-    print("extract_mac_address() called")
     with open(logfile, "r") as file:
         for line in file:
             for key in target_dict:
@@ -92,7 +91,7 @@ def get_vendor(ipmac_dict):
 
 
 def api_call(mac):
-    delay = 1
+    delay = .75
     time.sleep(delay)
     url = f"https://api.macvendors.com/{mac}"
     response = requests.get(url)
@@ -106,7 +105,18 @@ def api_call(mac):
 
 def screen_output(dict):
     """Function displays output to screen"""
-    print(dict)
+    print()
+    header = f"{'IP':<15} {'MAC ADDRESS':<18} {'VENDOR'}"
+    print(header)
+    print('-' * len(header))
+
+    for key, value in dict.items():
+        ip = key
+        mac_address = value[0]
+        vendor = value[1]
+        row = f"{ip:<15} {mac_address:<18} {vendor}"
+        print(row)
+
 
 
 def file_output(dict):
