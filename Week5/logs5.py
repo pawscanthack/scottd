@@ -75,15 +75,16 @@ def process_log(logfile):
 def screen_output(dict):
     """Function displays dictionary to screen"""
     print(dict)
-    """header = f"{'SERVER NAME':<25} {'IP ADDRESS':<35}"
+    header = f"{'COUNT':<10} {'FROM':<50} {'TO':<50}"
     print(header)
     print('-' * len(header))
     # Loop through dictionary displaying content to screen
     for key, value in dict.items():
-        servername = key
-        ip = value
-        row = f"{key:<25} {value:<35}"
-        print(row)"""
+        from_value = key
+        to_value  = value[0]
+        count_value = value[1]
+        row = f"{count_value:<10} {from_value:<50} {to_value:<50}"
+        print(row)
 
 
 def file_output(dict):
