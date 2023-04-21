@@ -121,7 +121,7 @@ def screen_output(dict):
 
 
 def file_output(dict):
-    """Function writes to dictionary to csv file"""
+    """Function writes dictionary to csv file"""
     filename = get_filename()
     with open(filename, 'w', newline='') as csvfile:
         fieldnames = ['IP', 'MAC ADDRESS', 'VENDOR']
