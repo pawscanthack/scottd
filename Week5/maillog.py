@@ -27,9 +27,9 @@ DEFAULT_LOG = "dhcpdsmall.log"
 def main():
     argument_check()
     file_check(sys.argv[1])
-    result_list = process_log(sys.argv[1])
-    screen_output(result_list)
-    #file_output(result_list)
+    result_dict = process_log(sys.argv[1])
+    screen_output(result_dict)
+    file_output(result_dict)
 
 
 # Subroutines
@@ -52,36 +52,38 @@ def file_check(file_name):
         sys.exit(1)
 
 def process_log(logfile):
-    server_list = ['1.1.1.1', 'super_secret_server.net' ]
+    server_dict = {"super_secret_server.net":"1.1.1.1"}
     with open(logfile, "r") as file:
         for line in file:
             if "connect" in line:
                 print("found")
-    return server_list
+    return server_dict
 
 
-def screen_output(list):
+def screen_output(dict):
     """Function displays disctionary to screen"""
     print()
-    header = f"{'SERVER NAME':<15} {'IP ADDRESS':<18}"
+    header = f"{'SERVER NAME':<25} {'IP ADDRESS':<35}"
     print(header)
     print('-' * len(header))
     # Loop through dictionary displaying content to screen
-    for item in list:
-        row = f"{item[0]:<15} {item[1]:<18}"
+    for key, value in dict.items():
+        servername = key
+        ip = value
+        row = f"{servername:<25} {ip:<35}"
         print(row)
 
 
-def file_output(list):
+def file_output(dict):
     """Function writes dictionary to csv file"""
     filename = get_filename()
     with open(filename, 'w', newline='') as csvfile:
-        fieldnames = ['IP', 'MAC ADDRESS', 'VENDOR']
+        fieldnames = ['SERVER_NAME', 'IP_ADDRESS']
         csv_writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         csv_writer.writeheader()
         # Loop through dictionary writing to csv file
         for key, value in dict.items():
-            row_dict = {'IP': key, 'MAC ADDRESS': value[0], 'VENDOR': value[1]}
+            row_dict = {'SERVER_NAME': key, 'IP_ADDRESS': value}
             csv_writer.writerow(row_dict)
     print(f'\nOutput saved in {filename}')
 
@@ -89,7 +91,7 @@ def file_output(list):
 def get_filename():
     """Function to generate a filename based on the script name and the current date and time"""
     now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    return f'logs3_{now}.csv'
+    return f'maillog.py_{now}.csv'
 
 
 # Run main() if script called directly, else use as a library to be imported
