@@ -6,7 +6,7 @@ Bellevue College
 Spring 2023
 """
 # Script will search for an IP in the a connections to a mail server from a log file
-# Returns server name and ip to screen and csv
+# Returns server name and ip, and from to screen and csv
 
 # Versioning
 # Scott-20230420: initial version
@@ -50,7 +50,7 @@ def file_check(file_name):
 
 
 def process_log(logfile):
-    """Function receives log file and returns a dictionary of server name and ip adresses for connecting servers"""
+    """Function receives log file and returns a dictionary of server name, ip adresses, and from for connecting servers"""
     server_dict = {}
     with open(logfile, "r") as file:
         for line in file:
