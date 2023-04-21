@@ -51,7 +51,7 @@ def file_check(file_name):
 
 def process_log(logfile):
     """Function receives log file and returns a dictionary of count, from, and to for redirects"""
-    redirect_dict = {"my.nsd.org":["https://clever.com/in/northshore",1]}
+    redirect_dict = {}
     with open(logfile, "r") as file:
         for line in file:
             # FIX: Look for redirects
@@ -63,9 +63,12 @@ def process_log(logfile):
                     to_value = match.group(2)
                     print(f"From: {from_value}")
                     print(f"To: {to_value}")
+                    if from_value in redirect_dict and redirect_dict[from_value][0] == to_value:
+                        redirect_dict[from_value][1] += 1
+                    else:
+                        redirect_dict.update({from_value: [to_value, 1]})
                 else:
                     print("Not Found")
-                redirect_dict.update({from_value:to_value})
     return redirect_dict
 
 
