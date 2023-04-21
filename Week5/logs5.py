@@ -54,7 +54,9 @@ def process_log(logfile):
     redirect_dict = {}
     with open(logfile, "r") as file:
         for line in file:
-            # FIX: Look for redirects
+            if "ActiveSync" in line or "Basic" in line:
+                print("Skipped")
+                continue
             if "REDIRECT" in line:
                 print("Redirect found")
                 match = re.search(r'REDIRECT: (.*) to (https?://\S+)', line)
