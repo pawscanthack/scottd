@@ -6,7 +6,7 @@ Bellevue College
 Spring 2023
 """
 # Script will search for an IP in the a connections to a mail server from a log file
-# Returns server name and ip  to screen and csv
+# Returns server name and ip to screen and csv
 
 # Versioning
 # Scott-20230420: initial version
@@ -17,11 +17,9 @@ import datetime
 import os
 import re
 import csv
-import requests
 import time
+import re
 
-
-DEFAULT_LOG = "dhcpdsmall.log"
 
 # Main routine that is called when script is run
 def main():
@@ -36,7 +34,6 @@ def main():
 def argument_check():
     """Function checks for presence of argument and gives usage if argument is missing"""
     if len(sys.argv) == 1:
-        # Future Feature: accept optional third argument for log file later
         print("Usage: maillog.py [log file]")
         sys.exit(1)
     else:
@@ -51,17 +48,25 @@ def file_check(file_name):
     except FileNotFoundError:
         sys.exit(1)
 
+
 def process_log(logfile):
-    server_dict = {"super_secret_server.net":"1.1.1.1"}
+    """Function receives log file and returns a dictionary of server name and ip adresses for connecting servers"""
+    server_dict = {}
     with open(logfile, "r") as file:
         for line in file:
             if "connect" in line:
-                print("found")
+                match = re.search(r'connect from (\S+)\[(\d+\.\d+\.\d+\.\d+)\]', line)
+                if match:
+                    server_name = match.group(1)
+                    ip_address = match.group(2)
+                else:
+                    server_name = "Not Found"
+                server_dict.update({server_name:ip_address})
     return server_dict
 
 
 def screen_output(dict):
-    """Function displays disctionary to screen"""
+    """Function displays dictionary to screen"""
     print()
     header = f"{'SERVER NAME':<25} {'IP ADDRESS':<35}"
     print(header)
@@ -70,7 +75,7 @@ def screen_output(dict):
     for key, value in dict.items():
         servername = key
         ip = value
-        row = f"{servername:<25} {ip:<35}"
+        row = f"{key:<25} {value:<35}"
         print(row)
 
 
