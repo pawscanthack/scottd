@@ -34,7 +34,7 @@ def main():
 def argument_check():
     """Function checks for presence of argument and gives usage if argument is missing"""
     if len(sys.argv) == 1:
-        print("Usage: maillog.py [log file]")
+        print("Usage: logs5.py [log file]")
         sys.exit(1)
     else:
         return sys.argv[1]
@@ -57,13 +57,15 @@ def process_log(logfile):
             # FIX: Look for redirects
             if "REDIRECT" in line:
                 print("Redirect found")
-                """match = re.search(r'connect from (\S+)\[(\d+\.\d+\.\d+\.\d+)\]', line)
+                match = re.search(r'REDIRECT: (.*) to (https?://\S+)', line)
                 if match:
-                    server_name = match.group(1)
-                    ip_address = match.group(2)
+                    from_value = match.group(1)
+                    to_value = match.group(2)
+                    print(f"From: {from_value}")
+                    print(f"To: {to_value}")
                 else:
-                    server_name = "Not Found"
-                redirect_dict.update({server_name:ip_address})"""
+                    print("Not Found")
+                redirect_dict.update({from_value:to_value})
     return redirect_dict
 
 
