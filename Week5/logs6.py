@@ -6,10 +6,12 @@ Bellevue College
 Spring 2023
 """
 # Script will search for an IP in the a connections to a mail server from a log file
-# Returns server name and ip, and from to screen and csv
+# Returns server name ip, and from address to screen and csv
 
 # Versioning
 # Scott-20230420: initial version
+# Scott-20230423: v2
+# Fixed script to show from addresses correctly
 
 # Set up initial variables and imports
 import sys
@@ -28,7 +30,7 @@ def main():
     log_list = create_list_from_file(sys.argv[1])
     result_dict = process_log(log_list)
     screen_output(result_dict)
-    #file_output(result_dict)
+    file_output(result_dict)
 
 
 # Subroutines
@@ -59,7 +61,7 @@ def create_list_from_file(logfile):
 
 
 def process_log(loglist):
-    """Function receives a logfile in a list and returns a dictionary of server name, ip adresses, and from for connecting servers"""
+    """Function receives a logfile in a list and returns a dictionary of server name, ip adresses, and from addresses for connecting servers"""
     server_dict = {}
     for line in loglist:
         if "connect" in line:
@@ -67,16 +69,13 @@ def process_log(loglist):
             if match:
                 server_name = match.group(1)
                 ip_address = match.group(2)
-                from_domain = re.search(r'(\S+)\.\S+\[\d+\.\d+\.\d+\.\d+\]', line).group(1)
+                #from_domain = re.search(r'(\S+)\.\S+\[\d+\.\d+\.\d+\.\d+\]', line).group(1)
                 index = loglist.index(line)
                 from_line = loglist[index+3]
-                print(line)
-                print(from_line)
-                server_dict.update({server_name:[ip_address, from_domain]})
-            else:
-                server_name = "Not Found"
-                ip_address = "Not Found"
-                from_domain = "Not Found"
+                match = re.search(r'from=<([^>]+)>', from_line)
+                if match:
+                    email_address = match.group(1)
+                server_dict.update({server_name:[ip_address, email_address]})
             
     return server_dict
 
