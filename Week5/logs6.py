@@ -63,16 +63,21 @@ def process_log(loglist):
     server_dict = {}
     for line in loglist:
         if "connect" in line:
-            match = re.search(r'connect from (\S+)\[(\d+\.\d+\.\d+\.\d+)\]', line)
+            match = re.search(r' connect from (\S+)\[(\d+\.\d+\.\d+\.\d+)\]', line)
             if match:
                 server_name = match.group(1)
                 ip_address = match.group(2)
                 from_domain = re.search(r'(\S+)\.\S+\[\d+\.\d+\.\d+\.\d+\]', line).group(1)
+                index = loglist.index(line)
+                from_line = loglist[index+3]
+                print(line)
+                print(from_line)
+                server_dict.update({server_name:[ip_address, from_domain]})
             else:
                 server_name = "Not Found"
                 ip_address = "Not Found"
                 from_domain = "Not Found"
-            server_dict.update({server_name:[ip_address, from_domain]})
+            
     return server_dict
 
 
