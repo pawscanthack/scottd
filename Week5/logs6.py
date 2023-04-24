@@ -25,9 +25,10 @@ import re
 def main():
     argument_check()
     file_check(sys.argv[1])
-    result_dict = process_log(sys.argv[1])
+    log_list = create_list_from_file(sys.argv[1])
+    result_dict = process_log(log_list)
     screen_output(result_dict)
-    file_output(result_dict)
+    #file_output(result_dict)
 
 
 # Subroutines
@@ -48,23 +49,30 @@ def file_check(file_name):
     except FileNotFoundError:
         sys.exit(1)
 
-
-def process_log(logfile):
-    """Function receives log file and returns a dictionary of server name, ip adresses, and from for connecting servers"""
-    server_dict = {}
-    with open(logfile, "r") as file:
+def create_list_from_file(logfile):
+    """Function accepts a file and returns a list"""
+    newlist = []
+    with open(logfile, 'r') as file:
         for line in file:
-            if "connect" in line:
-                match = re.search(r'connect from (\S+)\[(\d+\.\d+\.\d+\.\d+)\]', line)
-                if match:
-                    server_name = match.group(1)
-                    ip_address = match.group(2)
-                    from_domain = re.search(r'(\S+)\.\S+\[\d+\.\d+\.\d+\.\d+\]', line).group(1)
-                else:
-                    server_name = "Not Found"
-                    ip_address = "Not Found"
-                    from_domain = "Not Found"
-                server_dict.update({server_name:[ip_address, from_domain]})
+            newlist.append(line.strip())
+        return newlist
+
+
+def process_log(loglist):
+    """Function receives a logfile in a list and returns a dictionary of server name, ip adresses, and from for connecting servers"""
+    server_dict = {}
+    for line in loglist:
+        if "connect" in line:
+            match = re.search(r'connect from (\S+)\[(\d+\.\d+\.\d+\.\d+)\]', line)
+            if match:
+                server_name = match.group(1)
+                ip_address = match.group(2)
+                from_domain = re.search(r'(\S+)\.\S+\[\d+\.\d+\.\d+\.\d+\]', line).group(1)
+            else:
+                server_name = "Not Found"
+                ip_address = "Not Found"
+                from_domain = "Not Found"
+            server_dict.update({server_name:[ip_address, from_domain]})
     return server_dict
 
 
