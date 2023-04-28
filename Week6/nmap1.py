@@ -23,7 +23,7 @@ def main():
     filtered_result = filter_scan_result(scan_result)
     #file_output(scan_result)
     #screen_output(scan_result)
-    #print(filtered_results)
+    print(filtered_result)
 
 
 
@@ -38,11 +38,20 @@ def scan_target_list(list):
 
 def filter_scan_result(dict):
     for main_key, nested_dict in dict.items():
-        print(main_key)
-        for nested_dict, nested_value in nested_dict.items():
-            print(nested_dict)
-            print(nested_value)
-
+        return_list = []
+        ip_address_key = list(nested_dict.keys())[0]
+        # Iterate through the 'ports' list
+        print(ip_address_key)
+        for ip_address_key, ip_info in nested_dict.items():
+            if 'ports' in ip_info:
+                for port_info in ip_info['ports']:
+                    # Check if the 'state' is 'open'
+                    if port_info['state'] == 'open':
+                        print(f"Port {port_info['portid']} is open.")
+                        return_list.append([ip_address_key, port_info['portid']])
+                    else:
+                        print(f"Port {port_info['portid']} is not open (state: {port_info['state']}).")
+    return return_list
 
 # Run main() if script called directly, else use as a library to be imported
 if __name__ == "__main__":
