@@ -17,8 +17,8 @@ import nmap3
 import csv
 import datetime
 
-#DEFAULT_TARGET_LIST =['152.157.64.0/24', '152.157.65.0/24']
-DEFAULT_TARGET_LIST =['scanme.nmap.org']
+DEFAULT_TARGET_LIST =['152.157.64.0/24', '152.157.65.0/24']
+#DEFAULT_TARGET_LIST =['scanme.nmap.org']
 
 
 # Main routine that is called when script is run
