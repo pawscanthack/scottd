@@ -5,8 +5,9 @@ SEC444
 Bellevue College
 Spring 2023
 """
-# Script that does a syn scan only of DEFAULT_TARGETS(152.157.64.0/24 and 152.157.65.0/24)
+# Script that does a syn scan of DEFAULT_TARGETS(152.157.64.0/24 and 152.157.65.0/24)
 # Creates a CSV of the IPs and open ports
+# Must be run as 'sudo'
 
 # Versioning
 # Scott-20230427: initial version
@@ -27,39 +28,42 @@ def main():
     filtered_result = filter_scan_result(scan_result)
     file_output(filtered_result)
     screen_output(filtered_result)
-    #print(filtered_result)
-
 
 
 # Subroutines
 def scan_target_list(target_list):
+    """Function accepts list of targets and performs syn scan on each, returning the results as a dictionary"""
     result = {}
     nmap = nmap3.NmapScanTechniques()
     for target in target_list:
-        scan_data = nmap.nmap_syn_scan(target)  # Perform syn scan on the target
+        scan_data = nmap.nmap_syn_scan(target, args="-T5")  # Perform syn scan on the target
+        #scan_data = nmap.nmap_syn_scan(target, "1-65535")  # Perform syn scan on full range of ports
         result[target] = scan_data  # Update the result dictionary with the scan data
     return result
 
+
 def filter_scan_result(filter_dict):
+    """Function accepts dictionary output from nmap scan and returns dictionary of IPs and open ports"""
     return_dict = {}
     for main_key, nested_dict in filter_dict.items():    
         ip_address_key = list(nested_dict.keys())[0]
         # Iterate through the 'ports' list
-        print(ip_address_key)
         for ip_address_key, ip_info in nested_dict.items():
             if 'ports' in ip_info:
                 for port_info in ip_info['ports']:
                     # Check if the 'state' is 'open'
                     if port_info['state'] == 'open':
-                        print(f"Port {port_info['portid']} is open.")
+                        #print(f"Port {port_info['portid']} is open.")
                         port = port_info['portid']
                         if ip_address_key not in return_dict:
                             return_dict[ip_address_key] = [port]
                         else:
                             return_dict[ip_address_key].append(port)
                     else:
-                        print(f"Port {port_info['portid']} is not open (state: {port_info['state']}).")
+                        #print(f"Port {port_info['portid']} is not open (state: {port_info['state']}).")
+                        continue
     return return_dict
+
 
 def screen_output(scan_dict):
     """Function displays dictionary to screen"""
@@ -85,6 +89,7 @@ def file_output(scan_dict):
             row_dict = {'IP_ADDRESS': key, 'PORTS': ' '.join(map(str, value))}
             csv_writer.writerow(row_dict)
     print(f'\nOutput saved in {filename}')
+
 
 def get_filename():
     """Function to generate a filename based on the script name and the current date and time"""
