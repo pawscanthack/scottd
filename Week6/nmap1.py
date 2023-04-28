@@ -79,7 +79,8 @@ def screen_output(scan_dict):
 
 def file_output(scan_dict):
     """Function writes dictionary to csv file"""
-    filename = get_filename()
+    #filename = get_filename()
+    filename = 'nmap1.csv'
     with open(filename, 'w', newline='') as csvfile:
         fieldnames = ['IP_ADDRESS', 'PORTS']
         csv_writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
