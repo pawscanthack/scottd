@@ -19,7 +19,8 @@ DEFAULT_TARGET = 'nsd.org'
 # Main routine that is called when script is run
 def main():
     result_list = scan_dns(DEFAULT_TARGET)
-    screen_output(result_list)
+    filtered_list = filter_list(result_list)
+    screen_output(filtered_list)
     #csv_output(result_dict)
     print(result_list)
     
@@ -30,6 +31,18 @@ def scan_dns(target):
     dns_results = nmap.nmap_dns_brute_script(target)
     print(type(dns_results))
     return dns_results
+
+def filter_list(scan_list):
+    """Function prunes IPv6 Info from list"""
+    pruned_list = []
+    for scan_dict in scan_list:
+        ip_address = scan_dict['address']
+        if ':' not in ip_address:
+            pruned_list.append(scan_dict)
+    return pruned_list
+        
+
+
 
 def screen_output(scan_list):
     #Function displays list of dictionaries to screen
