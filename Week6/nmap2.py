@@ -39,7 +39,7 @@ def read_file_to_dictionary(filename):
         for row in reader:
             key = row['IP_ADDRESS']
             value = row['PORTS']
-            result[key] = value
+            result[key] = {'IP_ADDRESS': key, 'PORTS': value}
     return result
 
 def scan_target_dictionary(target_dict):
@@ -47,8 +47,8 @@ def scan_target_dictionary(target_dict):
     updated_dict = {}
     for key, value in target_dict.items():
         os_info = get_os_info(key)
-        updated_entry = [value, os_info]
-        updated_dict[key] = updated_entry
+        value['OS_INFO'] = os_info
+        updated_dict[key] = value
     return updated_dict 
 
 def get_os_info(ip):
