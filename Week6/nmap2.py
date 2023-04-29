@@ -23,87 +23,49 @@ DEFAULT_TARGET_FILE = 'nmap1.csv'
 
 # Main routine that is called when script is run
 def main():
-    #target_file = argument_check()
-    #file_check(target_file)
     target_dictionary = read_file_to_dictionary(DEFAULT_TARGET_FILE)
     scan_results = scan_target_dictionary(target_dictionary)
-    print(scan_results)
     #file_output(scan_results)
-    #screen_output(scan_results)
-
+    #screen_output(target_dictionary)
+    #print(target_dictionary)
 
 # Subroutines
-def argument_check():
-    #FIX: return DEFAULT_TARGET_FILE if none is passed in command line
-    """Function checks for presence of argument and gives usage if argument is missing"""
-    if  len(sys.argv) == 1:
-        # FIX Usage info
-        print("Usage: nmap2.py [file]")
-        sys.exit(1)
-    else:
-        return sys.argv[1]
-    
-def file_check(file_name):
-    """Function checks if user input is valid filename"""
-    try:
-        with open(file_name, 'r') as file:
-            return 1
-    except FileNotFoundError:
-        sys.exit(1)
-
-def read_file_to_dictionary(file):
-     """Function accepts filename and returns dictionary"""
+def read_file_to_dictionary(filename):
+    """Function accepts filename and returns dictionary"""
+    result = {}
+    with open(filename, 'r') as data:
+        reader = csv.DictReader(data)
+        for row in reader:
+            key = row['IP_ADDRESS']
+            value = row['PORTS']
+            result[key] = value
+    return result
 
 def scan_target_dictionary(target_dict):
-     """Functions accepts dictionary, scans targets from key values, return dictionary with OS info appended"""
+    """Functions accepts dictionary, scans targets from key values, return dictionary with OS info appended"""
+    for key in target_dict:
+        os_info = get_os_info(key)
+        print(os_info)
 
 def get_os_info(ip):
-     """Function accepts ip address and returns os info"""
-
-""" def scan_target_list(target_list):
-    #Function accepts list of targets and performs syn scan on each, returning the results as a dictionary
-    result = {}
-    nmap = nmap3.NmapScanTechniques()
-    for target in target_list:
-        scan_data = nmap.nmap_syn_scan(target, args="-T5")  # Perform syn scan on the target
-        #scan_data = nmap.nmap_syn_scan(target, "1-65535")  # Perform syn scan on full range of ports
-        result[target] = scan_data  # Update the result dictionary with the scan data
-    return result """
-
-
-""" def filter_scan_result(filter_dict):
-    #Function accepts dictionary output from nmap scan and returns dictionary of IPs and open ports
-    return_dict = {}
-    for main_key, nested_dict in filter_dict.items():    
-        ip_address_key = list(nested_dict.keys())[0]
-        # Iterate through the 'ports' list
-        for ip_address_key, ip_info in nested_dict.items():
-            if 'ports' in ip_info:
-                for port_info in ip_info['ports']:
-                    # Check if the 'state' is 'open'
-                    if port_info['state'] == 'open':
-                        #print(f"Port {port_info['portid']} is open.")
-                        port = port_info['portid']
-                        if ip_address_key not in return_dict:
-                            return_dict[ip_address_key] = [port]
-                        else:
-                            return_dict[ip_address_key].append(port)
-                    else:
-                        #print(f"Port {port_info['portid']} is not open (state: {port_info['state']}).")
-                        continue
-    return return_dict """
-
+    """Function accepts ip address and returns os info"""
+    nmap = nmap3.Nmap()
+    os_results = nmap.nmap_os_detection(ip)
+    print(os_results)
+    os_match = os_results[ip]['osmatch'][0]['name']
+    return os_match
 
 def screen_output(scan_dict):
     """Function displays dictionary to screen"""
-    #FIX: Update format with new row for OS info
     print()
     header = f"{'IP ADDRESS':<25} {'PORTS':<15}"
     print(header)
     print('-' * len(header))
     # Loop through dictionary displaying content to screen
     for key, value in scan_dict.items():
-        row = f"{key:<25} {' '.join(map(str, value)):<15}"
+        ports_list = value.split()  # Split the value string into a list of strings
+        ports = ' '.join(ports_list)  # Join the list of strings with a single space
+        row = f"{key:<25} {ports:<15}"
         print(row)
 
 
