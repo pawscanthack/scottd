@@ -25,6 +25,7 @@ DEFAULT_TARGET_FILE = 'nmap1.csv'
 def main():
     target_dictionary = read_file_to_dictionary(DEFAULT_TARGET_FILE)
     scan_results = scan_target_dictionary(target_dictionary)
+    print(scan_results)
     #file_output(scan_results)
     #screen_output(target_dictionary)
     #print(target_dictionary)
@@ -42,16 +43,19 @@ def read_file_to_dictionary(filename):
     return result
 
 def scan_target_dictionary(target_dict):
-    """Functions accepts dictionary, scans targets from key values, return dictionary with OS info appended"""
-    for key in target_dict:
+    """Functions accepts dictionary, uses nmap os detection on from IPs from key values, returns updated dictionary with OS info appended"""
+    updated_dict = {}
+    for key, value in target_dict.items():
         os_info = get_os_info(key)
-        print(os_info)
+        updated_entry = [value, os_info]
+        updated_dict[key] = updated_entry
+    return updated_dict 
 
 def get_os_info(ip):
     """Function accepts ip address and returns os info"""
     nmap = nmap3.Nmap()
     os_results = nmap.nmap_os_detection(ip)
-    print(os_results)
+    #print(os_results)
     os_match = os_results[ip]['osmatch'][0]['name']
     return os_match
 
