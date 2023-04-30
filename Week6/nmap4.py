@@ -5,26 +5,26 @@ SEC444
 Bellevue College
 Spring 2023
 """
-# Script that performs OS scan of hosts found in nmap1
-# Creates a CSV of the IPs and open ports with additional OS info
-# Must be run as 'sudo'
+# Script that takes a csv file of IP and DNS info and adds additional columns for Country, RegionName, City, Zipcode, ISP
+# Results output to csv file and screen
 
 # Versioning
-# Scott-20230428: initial version
+# Scott-20230430: initial version
 
 # Set up initial variables and imports
 import nmap3
 import csv
 
-DEFAULT_TARGET_FILE = 'nmap1.csv'
+DEFAULT_TARGET_FILE = 'nmap3a.csv'
 
 
 # Main routine that is called when script is run
 def main():
     target_dictionary = read_file_to_dictionary(DEFAULT_TARGET_FILE)
-    scan_results = scan_target_dictionary(target_dictionary)
-    csv_output(scan_results)
-    screen_output(scan_results)
+    #scan_results = scan_target_dictionary(target_dictionary)
+    #csv_output(scan_results)
+    #screen_output(scan_results)
+    print(target_dictionary)
 
 # Subroutines
 def read_file_to_dictionary(filename):
@@ -33,9 +33,9 @@ def read_file_to_dictionary(filename):
     with open(filename, 'r') as data:
         reader = csv.DictReader(data)
         for row in reader:
-            key = row['IP_ADDRESS']
-            value = row['PORTS']
-            result[key] = {'IP_ADDRESS': key, 'PORTS': value}
+            key = row['IP']
+            value = row['DNS']
+            result[key] = {'IP': key, 'DNS': value}
     return result
 
 def scan_target_dictionary(target_dict):
