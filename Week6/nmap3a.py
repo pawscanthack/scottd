@@ -44,7 +44,7 @@ def filter_list(scan_list):
 def screen_output(scan_list):
     """Function displays list of dictionaries to screen"""
     print()
-    header = f"{'address':<25} {'dns':<15}"
+    header = f"{'IP':<25} {'DNS':<15}"
     print(header)
     print('-' * len(header))
     # Loop through list of dictionaries displaying content to screen
@@ -59,12 +59,12 @@ def csv_output(scan_list):
     """Function writes list of dictionaries to csv file"""
     filename = 'nmap3a.csv'
     with open(filename, 'w', newline='') as csvfile:
-        fieldnames = ['address', 'dns']
+        fieldnames = ['IP', 'DNS']
         csv_writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         csv_writer.writeheader()
         # Loop through dictionary writing to csv file
         for scan_dict in scan_list:
-            row_dict = {'address': scan_dict['address'], 'dns': scan_dict['hostname']}
+            row_dict = {'IP': scan_dict['address'], 'DNS': scan_dict['hostname']}
             csv_writer.writerow(row_dict)
     print(f'\nOutput saved in {filename}')
 
