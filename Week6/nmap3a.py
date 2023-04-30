@@ -7,7 +7,6 @@ Spring 2023
 """
 # Script runs an nmap dns brute scan against nsd.org and put the DNS names and IP's into a csv file
 
-# Versioning
 # Scott-20230429: initial version
 
 # Set up initial variables and imports
@@ -21,16 +20,16 @@ def main():
     result_list = scan_dns(DEFAULT_TARGET)
     filtered_list = filter_list(result_list)
     screen_output(filtered_list)
-    #csv_output(result_dict)
-    print(result_list)
+    csv_output(filtered_list)
+
     
 # Subroutines
 def scan_dns(target):
     """Function accepts target and returns os info"""
     nmap = nmap3.Nmap()
     dns_results = nmap.nmap_dns_brute_script(target)
-    print(type(dns_results))
     return dns_results
+
 
 def filter_list(scan_list):
     """Function prunes IPv6 Info from list"""
@@ -40,12 +39,10 @@ def filter_list(scan_list):
         if ':' not in ip_address:
             pruned_list.append(scan_dict)
     return pruned_list
-        
-
 
 
 def screen_output(scan_list):
-    #Function displays list of dictionaries to screen
+    """Function displays list of dictionaries to screen"""
     print()
     header = f"{'address':<25} {'hostname':<15}"
     print(header)
@@ -57,18 +54,20 @@ def screen_output(scan_list):
         row = f"{ip_address:<25} {host:<15}"
         print(row)
 
-def csv_output(scan_dict):
-    #Function writes dictionary to csv file
-    filename = 'nmap2.csv'
+
+def csv_output(scan_list):
+    """Function writes list of dictionaries to csv file"""
+    filename = 'nmap3a.csv'
     with open(filename, 'w', newline='') as csvfile:
-        fieldnames = ['IP_ADDRESS', 'PORTS', 'OS_INFO']
+        fieldnames = ['address', 'hostname']
         csv_writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         csv_writer.writeheader()
         # Loop through dictionary writing to csv file
-        for key, value in scan_dict.items():
-            row_dict = {'IP_ADDRESS': value['IP_ADDRESS'], 'PORTS': value['PORTS'], 'OS_INFO': value['OS_INFO']}
+        for scan_dict in scan_list:
+            row_dict = {'address': scan_dict['address'], 'hostname': scan_dict['hostname']}
             csv_writer.writerow(row_dict)
     print(f'\nOutput saved in {filename}')
+
 
 # Run main() if script called directly, else use as a library to be imported
 if __name__ == "__main__":
