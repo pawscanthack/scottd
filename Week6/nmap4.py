@@ -14,6 +14,7 @@ Spring 2023
 # Set up initial variables and imports
 import nmap3
 import csv
+import requests
 
 DEFAULT_TARGET_FILE = 'nmap3a.csv'
 
@@ -21,10 +22,10 @@ DEFAULT_TARGET_FILE = 'nmap3a.csv'
 # Main routine that is called when script is run
 def main():
     target_dictionary = read_file_to_dictionary(DEFAULT_TARGET_FILE)
-    #scan_results = scan_target_dictionary(target_dictionary)
+    updated_dictionary = process_target_dictionary(target_dictionary)
     #csv_output(scan_results)
     #screen_output(scan_results)
-    print(target_dictionary)
+    print(updated_dictionary)
 
 # Subroutines
 def read_file_to_dictionary(filename):
@@ -38,21 +39,24 @@ def read_file_to_dictionary(filename):
             result[key] = {'IP': key, 'DNS': value}
     return result
 
-def scan_target_dictionary(target_dict):
+def process_target_dictionary(target_dict):
     """Functions accepts dictionary, uses nmap os detection on targets from key values, returns updated dictionary with OS info appended"""
     updated_dict = {}
     for key, value in target_dict.items():
-        os_info = get_os_info(key)
-        value['OS_INFO'] = os_info
+        api_info = call_api(key)
+        value['added_info'] = api_info
         updated_dict[key] = value
     return updated_dict 
 
-def get_os_info(target):
-    """Function accepts target and returns os info"""
-    nmap = nmap3.Nmap()
-    os_results = nmap.nmap_os_detection(target)
-    os_match = os_results[target]['osmatch'][0]['name']
-    return os_match
+def call_api(target):
+    """Function to call macvendor API"""
+    url = f"http://ip-api.com/json/{target}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.text
+    else:
+        print(f"Error for target '{target}': status code {response.status_code}, response text '{response.text}'")
+        return "Not Found"
 
 def screen_output(scan_dict):
     """Function displays dictionary to screen"""
