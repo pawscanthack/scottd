@@ -1,0 +1,6 @@
+name,macaddress,ip,cpucount,disks,ram,ostype,osversion
+yoda,c8:f6:50:e7:93:ff,192.168.10.21,1,1,4,ubuntu,12.04
+neytiri,30:85:a9:57:a9:1d,192.168.10.10,2,1,16,windows,2012
+hal,2c:44:fd:02:02:3b,192.168.10.22,1,1,2,windows,7
+thufir,5c:96:9d:90:10:b9,192.168.10.11,4,4,4,centos,6
+leeloo,00:10:49:1c:25:7f,192.168.10.23,1,1,4,windows,7
