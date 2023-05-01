@@ -23,10 +23,9 @@ DEFAULT_TARGET_FILE = 'nmap3a.csv'
 # Main routine that is called when script is run
 def main():
     target_dictionary = read_file_to_dictionary(DEFAULT_TARGET_FILE)
-    updated_dictionary = process_target_dictionary(target_dictionary)
+    process_target_dictionary(target_dictionary)
     #csv_output(scan_results)
-    #screen_output(scan_results)
-    print(updated_dictionary)
+    screen_output(target_dictionary)
 
 # Subroutines
 def read_file_to_dictionary(filename):
@@ -58,19 +57,21 @@ def call_api(target):
         print(f"Error for target '{target}': status code {response.status_code}, response text '{response.text}'")
         return "Not Found"
 
-def screen_output(scan_dict):
+def screen_output(result_dict):
     """Function displays dictionary to screen"""
     print()
-    header = f"{'IP ADDRESS':<25} {'PORTS':<15} {'OS INFO':<15}"
+    header = f"{'IP':<20} {'DNS':<20} {'REGION':20} {'CITY':20} {'ZIP':15} {'ISP':15} "
     print(header)
     print('-' * len(header))
-    # Loop through dictionary displaying content to screen
-    for key, value in scan_dict.items():
-        ip_address = value['IP_ADDRESS']
-        ports_list = value['PORTS'].split()  # Split the value string into a list of strings
-        ports = ' '.join(ports_list)  # Join the list of strings with a single space
-        os_info = value['OS_INFO']
-        row = f"{ip_address:<25} {ports:<15} {os_info:<15}"
+    # Loop through list of dictionaries displaying content to screen
+    for key, value in result_dict.items():
+        IP = value['IP']
+        DNS = value['DNS']
+        REGION = value['regionName']
+        CITY = value['city']
+        ZIP = value['zip']
+        ISP = value['isp']
+        row = f"{IP:<20} {DNS:<20} {REGION:<20} {CITY:<20} {ZIP:<15} {ISP:<15}"
         print(row)
 
 def csv_output(scan_dict):
