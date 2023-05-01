@@ -15,6 +15,7 @@ Spring 2023
 import nmap3
 import csv
 import requests
+import json
 
 DEFAULT_TARGET_FILE = 'nmap3a.csv'
 
@@ -41,12 +42,11 @@ def read_file_to_dictionary(filename):
 
 def process_target_dictionary(target_dict):
     """Functions accepts dictionary, uses nmap os detection on targets from key values, returns updated dictionary with OS info appended"""
-    updated_dict = {}
     for key, value in target_dict.items():
         api_info = call_api(key)
-        value['added_info'] = api_info
-        updated_dict[key] = value
-    return updated_dict 
+        parsed_info = json.loads(api_info)
+        target_dict[key].update(parsed_info)
+    return target_dict 
 
 def call_api(target):
     """Function to call macvendor API"""
