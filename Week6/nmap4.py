@@ -24,8 +24,9 @@ DEFAULT_TARGET_FILE = 'nmap3a.csv'
 def main():
     target_dictionary = read_file_to_dictionary(DEFAULT_TARGET_FILE)
     process_target_dictionary(target_dictionary)
-    #csv_output(scan_results)
     screen_output(target_dictionary)
+    csv_output(target_dictionary)
+
 
 # Subroutines
 def read_file_to_dictionary(filename):
@@ -39,16 +40,18 @@ def read_file_to_dictionary(filename):
             result[key] = {'IP': key, 'DNS': value}
     return result
 
+
 def process_target_dictionary(target_dict):
-    """Functions accepts dictionary, uses nmap os detection on targets from key values, returns updated dictionary with OS info appended"""
+    """Functions accepts dictionary, calls API using key values, returns updated dictionary with info appended"""
     for key, value in target_dict.items():
         api_info = call_api(key)
         parsed_info = json.loads(api_info)
         target_dict[key].update(parsed_info)
     return target_dict 
 
+
 def call_api(target):
-    """Function to call macvendor API"""
+    """Function to call ip-api API and return country,regionName,city,zip,and isp"""
     url = f"http://ip-api.com/json/{target}?fields=country,regionName,city,zip,isp"
     response = requests.get(url)
     if response.status_code == 200:
@@ -56,6 +59,7 @@ def call_api(target):
     else:
         print(f"Error for target '{target}': status code {response.status_code}, response text '{response.text}'")
         return "Not Found"
+
 
 def screen_output(result_dict):
     """Function displays dictionary to screen"""
@@ -74,18 +78,19 @@ def screen_output(result_dict):
         row = f"{IP:<20} {DNS:<20} {REGION:<20} {CITY:<20} {ZIP:<15} {ISP:<15}"
         print(row)
 
+
 def csv_output(scan_dict):
     """Function writes dictionary to csv file"""
-    filename = 'nmap2.csv'
+    filename = 'nmap4.csv'
     with open(filename, 'w', newline='') as csvfile:
-        fieldnames = ['IP_ADDRESS', 'PORTS', 'OS_INFO']
+        fieldnames = ['IP', 'DNS', 'REGION_NAME', 'CITY', 'ZIP', 'ISP']
         csv_writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         csv_writer.writeheader()
         # Loop through dictionary writing to csv file
         for key, value in scan_dict.items():
-            row_dict = {'IP_ADDRESS': value['IP_ADDRESS'], 'PORTS': value['PORTS'], 'OS_INFO': value['OS_INFO']}
+            row_dict = {'IP': value['IP'],'DNS': value['DNS'],'REGION_NAME': value['regionName'],'CITY': value['city'],'ZIP': value['zip'],'ISP': value['isp']}
             csv_writer.writerow(row_dict)
-    print(f'\nOutput saved in {filename}')
+    print(f'\nOutput saved to {filename}')
 
 
 # Run main() if script called directly, else use as a library to be imported
