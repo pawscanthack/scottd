@@ -50,7 +50,7 @@ def process_target_dictionary(target_dict):
 
 def call_api(target):
     """Function to call macvendor API"""
-    url = f"http://ip-api.com/json/{target}"
+    url = f"http://ip-api.com/json/{target}?fields=country,regionName,city,zip,isp"
     response = requests.get(url)
     if response.status_code == 200:
         return response.text
