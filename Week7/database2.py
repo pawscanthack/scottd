@@ -14,21 +14,21 @@ Spring 2023
 import sys
 import pymysql
 
-DB_URL = 'ubuntu@ec2-44-205-160-194.compute-1.amazonaws.com'
+DB_LOCATION = 'localhost'
 DB_USER = 'cmdb'
-DB_TARGET = 'cmdb'
+DB_NAME = 'cmdb'
 DB_PASS = 'cmdbpass'
-TARGET_TABLE = 'devices'
+TABLE_NAME = 'devices'
 
 # Main routine that is called when script is run
 def main():
   file_output_type = argument_check()
   data_list = get_data()
-  screen_output(data_list)
-  if file_output_type == 'csv':
-      csv_output(data_list)
-  elif file_output_type == 'json':
-      json_output(data_list)
+  #screen_output(data_list)
+  #if file_output_type == 'csv':
+      #csv_output(data_list)
+  #elif file_output_type == 'json':
+      #json_output(data_list)
 
 
 # Subroutines
@@ -43,7 +43,7 @@ def argument_check():
 
 def get_data():
     # Open database connection
-    db = pymysql.connect(host=DB_URL, user=DB_USER, password=DB_PASS, database=DB_TARGET)
+    db = pymysql.connect(host=DB_LOCATION, user=DB_USER, password=DB_PASS, database=DB_NAME)
 
     # prepare a cursor object using cursor() method
     cursor = db.cursor()
