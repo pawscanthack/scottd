@@ -14,7 +14,7 @@ Spring 2023
 import sys
 import pymysql
 
-DB_LOCATION = 'localhost'
+DB_LOCATION = '44.205.160.194'
 DB_USER = 'cmdb'
 DB_NAME = 'cmdb'
 DB_PASS = 'cmdbpass'
