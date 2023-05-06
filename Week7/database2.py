@@ -13,12 +13,14 @@ Spring 2023
 # Set up initial variables and imports
 import sys
 import pymysql
+import json
 
 DB_LOCATION = '44.205.160.194'
 DB_USER = 'cmdb'
 DB_NAME = 'cmdb'
 DB_PASS = 'cmdbpass'
 TABLE_NAME = 'devices'
+
 
 # Main routine that is called when script is run
 def main():
@@ -40,6 +42,7 @@ def argument_check():
     else:
         #FIX: Add error handling
         return sys.argv[1]
+
 
 def get_data():
     # Open database connection
@@ -72,6 +75,7 @@ def get_data():
     # disconnect from server
     db.close()
 
+
 def screen_output(datalist):
     """Function displays list of dictionaries to screen"""
     print()
@@ -99,7 +103,6 @@ def csv_output(datalist):
             csv_writer.writerow(row_dict)
     print(f'\nOutput saved in {filename}')
 
-import json
 
 def json_output(datalist):
     filename = 'nmap3a.json'
