@@ -71,7 +71,7 @@ def get_data():
           osversion = row[7]
           # Now print fetched result
           appended_data = name, macaddress, ip, cpucount, disks, ram, ostype, osversion
-          data_darray.append(appended_data)
+          data_array.append(appended_data)
       return data_array
     except:
       print ("Error: unable to fetch data")
