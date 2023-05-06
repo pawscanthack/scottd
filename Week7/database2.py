@@ -24,14 +24,14 @@ TABLE_NAME = 'devices'
 
 # Main routine that is called when script is run
 def main():
-  file_output_type = argument_check()
-  data_list = get_data()
-  #screen_output(data_list)
-  #if file_output_type == 'csv':
-      #csv_output(data_list)
-  #elif file_output_type == 'json':
-      #json_output(data_list)
-
+    file_output_type = argument_check()
+    data_list = get_data()
+    #screen_output(data_list)
+    #if file_output_type == 'csv':
+        #csv_output(data_list)
+    #elif file_output_type == 'json':
+        #json_output(data_list)
+    print(data_list)
 
 # Subroutines
 def argument_check():
@@ -45,6 +45,8 @@ def argument_check():
 
 
 def get_data():
+    # Create Array
+    data_array = []
     # Open database connection
     db = pymysql.connect(host=DB_LOCATION, user=DB_USER, password=DB_PASS, database=DB_NAME)
 
@@ -68,7 +70,9 @@ def get_data():
           ostype = row[6]
           osversion = row[7]
           # Now print fetched result
-          print (name, macaddress, ip, cpucount, disks, ram, ostype, osversion)
+          appended_data = name, macaddress, ip, cpucount, disks, ram, ostype, osversion
+          data_darray.append(appended_data)
+      return data_array
     except:
       print ("Error: unable to fetch data")
 
