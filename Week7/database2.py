@@ -14,6 +14,7 @@ Spring 2023
 import sys
 import pymysql
 import json
+from numpy import *
 
 DB_LOCATION = '44.205.160.194'
 DB_USER = 'cmdb'
@@ -46,7 +47,7 @@ def argument_check():
 
 def get_data():
     # Create Array
-    data_array = []
+    data_array = array([])
     # Open database connection
     db = pymysql.connect(host=DB_LOCATION, user=DB_USER, password=DB_PASS, database=DB_NAME)
 
@@ -71,10 +72,12 @@ def get_data():
           osversion = row[7]
           # Now print fetched result
           appended_data = name, macaddress, ip, cpucount, disks, ram, ostype, osversion
-          data_array.append(appended_data)
+          data_array = append(data_array, appended_data)
+          print(type(data_array))
       return data_array
-    except:
+    except Exception as e:
       print ("Error: unable to fetch data")
+      print("Exception:", e)
 
     # disconnect from server
     db.close()
