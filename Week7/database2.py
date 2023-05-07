@@ -91,7 +91,7 @@ def screen_output(datalist):
     header = f"{'NAME':<10} {'MAC':<20} {'IP':<15} {'CPU_COUNT':<10} {'DISKS':<10} {'RAM':<10} {'OSTYPE':<15} {'OSVERSION':<15}"
     print(header)
     print('-' * len(header))
-    # Loop through list of dictionaries displaying content to screen
+    # Loop through list displaying content to screen
     for items in datalist:
         name = items[0]
         mac = items[1]
