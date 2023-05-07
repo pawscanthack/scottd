@@ -14,6 +14,7 @@ Spring 2023
 import sys
 import pymysql
 import json
+import csv
 
 DB_LOCATION = '44.205.160.194'
 DB_USER = 'cmdb'
@@ -26,12 +27,16 @@ TABLE_NAME = 'devices'
 def main():
     file_output_type = argument_check()
     data_list = get_data()
-    #screen_output(data_list)
-    #if file_output_type == 'csv':
-        #csv_output(data_list)
-    #elif file_output_type == 'json':
-        #json_output(data_list)
-    print(data_list)
+    screen_output(data_list)
+    # Print the results to the correct output method
+    
+    """  if file_output_type == 'csv':
+        csv_output(data_list)
+    elif file_output_type == 'json':
+        json_output(data_list)
+    else:
+        print('Invalid output method.  Valid options are screen, csv, and json') """
+    #print(data_list)
 
 # Subroutines
 def argument_check():
@@ -83,22 +88,28 @@ def get_data():
 
 
 def screen_output(datalist):
-    """Function displays list of dictionaries to screen"""
+    """Function displays list to screen"""
     print()
-    header = f"{'IP':<25} {'DNS':<15}"
+    header = f"{'NAME':<10} {'MAC':<20} {'IP':<15} {'CPU_COUNT':<10} {'DISKS':<10} {'RAM':<10} {'OSTYPE':<15} {'OSVERSION':<15}"
     print(header)
     print('-' * len(header))
     # Loop through list of dictionaries displaying content to screen
-    for scan_dict in datalist:
-        ip_address = scan_dict['address']
-        host = scan_dict['hostname']
-        row = f"{ip_address:<25} {host:<15}"
+    for items in datalist:
+        name = items[0]
+        mac = items[1]
+        ip = items[2]
+        cpu = items[3]
+        disks = items[4]
+        ram = items[5]
+        ostype = items[6]
+        osversion = items[7]
+        row = f"{name:<10} {mac:<20} {ip:<15} {cpu:<10} {disks:<10} {ram:<10} {ostype:<15} {osversion:<15}"
         print(row)
 
 
 def csv_output(datalist):
     """Function writes list of dictionaries to csv file"""
-    filename = 'nmap3a.csv'
+    filename = 'database2.csv'
     with open(filename, 'w', newline='') as csvfile:
         fieldnames = ['IP', 'DNS']
         csv_writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
