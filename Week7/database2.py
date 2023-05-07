@@ -5,16 +5,17 @@ SEC444
 Bellevue College
 Spring 2023
 """
-# Script connects to the database and prints out the data in the rows to csv and json formatted files
+# Script connects to a database and prints out the data in the rows to csv and json formatted files
 
 # Versioning
-# Scott-20230504: initial version
+# Scott-20230506: initial version
 
 # Set up initial variables and imports
 import sys
 import pymysql
 import json
 import csv
+
 
 DB_LOCATION = '44.205.160.194'
 DB_USER = 'cmdb'
@@ -28,15 +29,15 @@ def main():
     file_output_type = argument_check()
     data_list = get_data()
     screen_output(data_list)
+
     # Print the results to the correct output method
-    
     if file_output_type == 'csv':
         csv_output(data_list)
     elif file_output_type == 'json':
         json_output(data_list)
     else:
-        print('Invalid output method.  Valid options are screen, csv, and json')
-    #print(data_list)
+        print('Invalid output method.  Valid options are csv, and json')
+
 
 # Subroutines
 def argument_check():
@@ -50,14 +51,13 @@ def argument_check():
 
 
 def get_data():
-    # Create Array
+    """Function connects to database and returns data as a list"""
+    # Create list
     new_list = []
     # Open database connection
     db = pymysql.connect(host=DB_LOCATION, user=DB_USER, password=DB_PASS, database=DB_NAME)
-
     # prepare a cursor object using cursor() method
     cursor = db.cursor()
-
     # Prepare SQL query to INSERT a record into the database.
     sql = "SELECT * FROM devices "
     try:
@@ -78,11 +78,9 @@ def get_data():
           appended_data = name, macaddress, ip, cpucount, disks, ram, ostype, osversion
           new_list.append(appended_data)
       return new_list
-    
     except Exception as e:
       print ("Error: unable to fetch data")
       print("Exception:", e)
-
     # disconnect from server
     db.close()
 
@@ -108,7 +106,7 @@ def screen_output(datalist):
 
 
 def csv_output(datalist):
-    """Function writes list of dictionaries to csv file"""
+    """Function accepts list to write to csv file"""
     filename = 'database2.csv'
     with open(filename, 'w', newline='') as csvfile:
         fieldnames = ['NAME', 'MAC', 'IP', 'CPU_COUNT', 'DISKS', 'RAM', 'OSTYPE', 'OSVERSION']
@@ -130,23 +128,22 @@ def csv_output(datalist):
 
 
 def json_output(datalist):
+    """Function accepts list to save to json file"""
     filename = 'database2.json'
-    
     # Convert the data to a list of dictionaries
-    data_dicts = []
+    data_dicts = {}
     for row in datalist:
         device = {
             'NAME': row[0],
             'MAC': row[1],
-            'IP': row[2],
             'CPU_COUNT': row[3],
             'DISKS': row[4],
             'RAM': row[5],
             'OSTYPE': row[6],
             'OSVERSION': row[7]
         }
-        data_dicts.append(device)
-        
+        ip = row[2]
+        data_dicts[ip] = device
     with open(filename, 'w') as jsonfile:
         # Add indent parameter for a more human-readable format
         json.dump(data_dicts, jsonfile, indent=4)
