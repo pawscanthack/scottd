@@ -130,10 +130,28 @@ def csv_output(datalist):
 
 
 def json_output(datalist):
-    filename = 'nmap3a.json'
+    filename = 'database2.json'
+    
+    # Convert the data to a list of dictionaries
+    data_dicts = []
+    for row in datalist:
+        device = {
+            'NAME': row[0],
+            'MAC': row[1],
+            'IP': row[2],
+            'CPU_COUNT': row[3],
+            'DISKS': row[4],
+            'RAM': row[5],
+            'OSTYPE': row[6],
+            'OSVERSION': row[7]
+        }
+        data_dicts.append(device)
+        
     with open(filename, 'w') as jsonfile:
-        json.dump(datalist, jsonfile)
+        # Add indent parameter for a more human-readable format
+        json.dump(data_dicts, jsonfile, indent=4)
     print(f'\nOutput saved in {filename}')
+
 
 
 # Run main() if script called directly, else use as a library to be imported
