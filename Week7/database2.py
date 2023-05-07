@@ -30,12 +30,12 @@ def main():
     screen_output(data_list)
     # Print the results to the correct output method
     
-    """  if file_output_type == 'csv':
+    if file_output_type == 'csv':
         csv_output(data_list)
     elif file_output_type == 'json':
         json_output(data_list)
     else:
-        print('Invalid output method.  Valid options are screen, csv, and json') """
+        print('Invalid output method.  Valid options are screen, csv, and json')
     #print(data_list)
 
 # Subroutines
@@ -111,13 +111,21 @@ def csv_output(datalist):
     """Function writes list of dictionaries to csv file"""
     filename = 'database2.csv'
     with open(filename, 'w', newline='') as csvfile:
-        fieldnames = ['IP', 'DNS']
-        csv_writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        csv_writer.writeheader()
-        # Loop through dictionary writing to csv file
-        for scan_dict in datalist:
-            row_dict = {'IP': scan_dict['address'], 'DNS': scan_dict['hostname']}
-            csv_writer.writerow(row_dict)
+        fieldnames = ['NAME', 'MAC', 'IP', 'CPU_COUNT', 'DISKS', 'RAM', 'OSTYPE', 'OSVERSION']
+        csv_writer = csv.writer(csvfile)
+        csv_writer.writerow(fieldnames)
+        for row in datalist:
+          name = row[0]
+          macaddress = row[1]
+          ip = row[2]
+          cpucount = row[3]
+          disks = row[4]
+          ram = row[5]
+          ostype = row[6]
+          osversion = row[7]
+          # Now print fetched result
+          appended_data = name, macaddress, ip, cpucount, disks, ram, ostype, osversion
+          csv_writer.writerow(appended_data)
     print(f'\nOutput saved in {filename}')
 
 
