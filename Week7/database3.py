@@ -8,7 +8,7 @@ Spring 2023
 # This script returns information about the machine it is running on to the screen and saves it to a database
 
 # Versioning
-# Scott-20230506: initial version (developed from serverinfo1.py)
+# Scott-20230508: initial version (developed from serverinfo1.py)
 
 # Set up initial variables and imports
 import socket
@@ -37,6 +37,7 @@ def main():
 
 # Subroutines
 def get_system_info():
+    """Function retrieves system info from localhost and returns a dictionary"""
      # Retrieve the hostname
     hostname = socket.gethostname()
 
@@ -67,10 +68,11 @@ def get_system_info():
         'ip of eth0': ip_address,
         'mac of eth0': mac_address
     }
-
     return system_info
 
+
 def create_db_connection(host_name, user_name, user_password, db_name):
+    """Function creates and returns DB connection"""
     connection = None
     try:
         connection = pymysql.connect(
@@ -80,9 +82,8 @@ def create_db_connection(host_name, user_name, user_password, db_name):
             database=db_name
         )
         print("MySQL Database connection successful")
-    except Exception as err:
-        print(f"Error: '{err}'")
-
+    except Exception as e:
+        print(f"Error: '{e}'")
     return connection
 
 
@@ -104,9 +105,11 @@ def screen_output(dict_data):
     
     row = f"{name:<20} {mac:<20} {ip:<15} {cpu:<10} {disks:<10} {ram:<10} {ostype:<15} {osversion:<15}"
     print(row)
+    print()
 
 
 def write_to_db(connection, dict_data):
+    """Function inserts data into database"""
     cursor = connection.cursor()
     name = dict_data['Hostname']
     mac = dict_data['mac of eth0']
@@ -121,8 +124,10 @@ def write_to_db(connection, dict_data):
     try:
         cursor.execute(sql)
         connection.commit()
-    except:
-        db.rollback
+        print("MySQL write to database successful")
+    except Exception as Error:
+        connection.rollback
+        print(f"MySQL Database update unsuccessful: {Error}")
     connection.close()
     return
 

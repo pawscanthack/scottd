@@ -26,30 +26,12 @@ TABLE_NAME = 'devices'
 
 # Main routine that is called when script is run
 def main():
-    file_output_type = argument_check()
     data_list = get_data()
     screen_output(data_list)
-
-    # Print the results to the correct output method
-    if file_output_type == 'csv':
-        csv_output(data_list)
-    elif file_output_type == 'json':
-        json_output(data_list)
-    else:
-        print('Invalid output method.  Valid options are csv, and json')
+    output_check(data_list)
 
 
 # Subroutines
-def argument_check():
-    """Function checks for presence of argument and gives usage if argument is missing"""
-    if  not len(sys.argv) == 2:
-        print("Usage: database2.py [csv || json]")
-        sys.exit(1)
-    else:
-        #FIX: Add error handling
-        return sys.argv[1]
-
-
 def get_data():
     """Function connects to database and returns data as a list"""
     # Create list
@@ -61,26 +43,27 @@ def get_data():
     # Prepare SQL query to INSERT a record into the database.
     sql = "SELECT * FROM devices "
     try:
-      # Execute the SQL command
-      cursor.execute(sql)
-      # Fetch all the rows in a list of lists.
-      results = cursor.fetchall()
-      for row in results:
-          name = row[0]
-          macaddress = row[1]
-          ip = row[2]
-          cpucount = row[3]
-          disks = row[4]
-          ram = row[5]
-          ostype = row[6]
-          osversion = row[7]
-          # Now print fetched result
-          appended_data = name, macaddress, ip, cpucount, disks, ram, ostype, osversion
-          new_list.append(appended_data)
-      return new_list
+        # Execute the SQL command
+        cursor.execute(sql)
+        # Fetch all the rows in a list of lists.
+        results = cursor.fetchall()
+        for row in results:
+            name = row[0]
+            macaddress = row[1]
+            ip = row[2]
+            cpucount = row[3]
+            disks = row[4]
+            ram = row[5]
+            ostype = row[6]
+            osversion = row[7]
+            # Now print fetched result
+            appended_data = name, macaddress, ip, cpucount, disks, ram, ostype, osversion
+            new_list.append(appended_data)
+        print("\nMySQL Database connection successful")
+        return new_list
     except Exception as e:
-      print ("Error: unable to fetch data")
-      print("Exception:", e)
+        print ("Error: unable to fetch data")
+        print("Exception:", e)
     # disconnect from server
     db.close()
 
@@ -105,6 +88,22 @@ def screen_output(datalist):
         print(row)
 
 
+def output_check(data_list):
+    """Function checks for presence of argument and gives usage if argument is missing"""
+    if  not len(sys.argv) == 2:
+        print("\nUsage: database2.py [csv || json]")
+        sys.exit(1)
+    else:
+        if sys.argv[1] == 'csv':
+            csv_output(data_list)
+        elif sys.argv[1] == 'json':
+            json_output(data_list)
+        else:
+            print('\nInvalid file output method.  Valid options are csv, and json')
+            sys.exit(1)
+        return sys.argv[1]
+
+
 def csv_output(datalist):
     """Function accepts list to write to csv file"""
     filename = 'database2.csv'
@@ -113,17 +112,17 @@ def csv_output(datalist):
         csv_writer = csv.writer(csvfile)
         csv_writer.writerow(fieldnames)
         for row in datalist:
-          name = row[0]
-          macaddress = row[1]
-          ip = row[2]
-          cpucount = row[3]
-          disks = row[4]
-          ram = row[5]
-          ostype = row[6]
-          osversion = row[7]
-          # Now print fetched result
-          appended_data = name, macaddress, ip, cpucount, disks, ram, ostype, osversion
-          csv_writer.writerow(appended_data)
+            name = row[0]
+            macaddress = row[1]
+            ip = row[2]
+            cpucount = row[3]
+            disks = row[4]
+            ram = row[5]
+            ostype = row[6]
+            osversion = row[7]
+            # Now print fetched result
+            appended_data = name, macaddress, ip, cpucount, disks, ram, ostype, osversion
+            csv_writer.writerow(appended_data)
     print(f'\nOutput saved in {filename}')
 
 
@@ -148,7 +147,6 @@ def json_output(datalist):
         # Add indent parameter for a more human-readable format
         json.dump(data_dicts, jsonfile, indent=4)
     print(f'\nOutput saved in {filename}')
-
 
 
 # Run main() if script called directly, else use as a library to be imported
