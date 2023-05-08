@@ -30,13 +30,9 @@ TABLE_NAME = 'devices'
 def main():
     system_info = get_system_info()
     db_connection = create_db_connection(DB_LOCATION, DB_USER, DB_PASS, DB_NAME)
-
-    # Print the results
-    print()
     systeminfo = get_system_info()
-    print(systeminfo)
     screen_output(systeminfo)
-    #save_to_db(system_info)
+    write_to_db(db_connection, system_info)
 
 
 # Subroutines
@@ -89,10 +85,11 @@ def create_db_connection(host_name, user_name, user_password, db_name):
 
     return connection
 
+
 def screen_output(dict_data):
     """Function displays dictionary to screen"""
     print()
-    header = f"{'NAME':<10} {'MAC':<20} {'IP':<15} {'CPU_COUNT':<10} {'DISKS':<10} {'RAM':<10} {'OSTYPE':<15} {'OSVERSION':<15}"
+    header = f"{'NAME':<20} {'MAC':<20} {'IP':<15} {'CPU_COUNT':<10} {'DISKS':<10} {'RAM':<10} {'OSTYPE':<15} {'OSVERSION':<15}"
     print(header)
     print('-' * len(header))
     
@@ -105,13 +102,29 @@ def screen_output(dict_data):
     ostype = dict_data['OSType']
     osversion = dict_data['OSVersion']
     
-    row = f"{name:<10} {mac:<20} {ip:<15} {cpu:<10} {disks:<10} {ram:<10} {ostype:<15} {osversion:<15}"
+    row = f"{name:<20} {mac:<20} {ip:<15} {cpu:<10} {disks:<10} {ram:<10} {ostype:<15} {osversion:<15}"
     print(row)
 
 
-def save_to_db(dict_data):
-     # DO
-     return
+def write_to_db(connection, dict_data):
+    cursor = connection.cursor()
+    name = dict_data['Hostname']
+    mac = dict_data['mac of eth0']
+    ip = dict_data['ip of eth0']
+    cpu = int(dict_data['CPU (count)'])
+    disks = int(dict_data['Disks (Count)'])
+    ram = int(dict_data['RAM (GB)'])
+    ostype = dict_data['OSType']
+    osversion = dict_data['OSVersion']
+    sql = "INSERT INTO devices(name, macaddress, ip, cpucount, disks, ram, ostype, osversion) \
+    VALUES ('%s', '%s', '%s', '%d', '%d', '%d', '%s', '%s')" % (name, mac, ip, cpu, disks, ram, ostype, osversion)
+    try:
+        cursor.execute(sql)
+        connection.commit()
+    except:
+        db.rollback
+    connection.close()
+    return
 
 
 # Run main() if script called directly, else use as a library to be imported
