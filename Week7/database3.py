@@ -28,8 +28,20 @@ TABLE_NAME = 'devices'
 
 # Main routine that is called when script is run
 def main():
+    system_info = get_system_info()
+    db_connection = create_db_connection(DB_LOCATION, DB_USER, DB_PASS, DB_NAME)
 
-    # Retrieve the hostname
+    # Print the results
+    print()
+    systeminfo = get_system_info()
+    print(systeminfo)
+    screen_output(systeminfo)
+    #save_to_db(system_info)
+
+
+# Subroutines
+def get_system_info():
+     # Retrieve the hostname
     hostname = socket.gethostname()
 
     # Retrieve the IP address and MAC address of the 'eth0' interface
@@ -60,13 +72,23 @@ def main():
         'mac of eth0': mac_address
     }
 
-    # Print the results
-    print()
-    screen_output(system_info)
-    save_to_db(system_info)
+    return system_info
 
+def create_db_connection(host_name, user_name, user_password, db_name):
+    connection = None
+    try:
+        connection = pymysql.connect(
+            host=host_name,
+            user=user_name,
+            passwd=user_password,
+            database=db_name
+        )
+        print("MySQL Database connection successful")
+    except Exception as err:
+        print(f"Error: '{err}'")
 
-# Subroutines
+    return connection
+
 def screen_output(dict_data):
     """Function displays dictionary to screen"""
     print()
@@ -74,14 +96,14 @@ def screen_output(dict_data):
     print(header)
     print('-' * len(header))
     
-    name = dict['Hostname']
-    mac = dict['mac of eth0']
-    ip = dict['ip of eth0']
-    cpu = dict['CPU (count)']
-    disks = dict['Disks (Count)']
-    ram = dict['RAM (GB)']
-    ostype = dict['OSType']
-    osversion = dict['OSVersion']
+    name = dict_data['Hostname']
+    mac = dict_data['mac of eth0']
+    ip = dict_data['ip of eth0']
+    cpu = dict_data['CPU (count)']
+    disks = dict_data['Disks (Count)']
+    ram = dict_data['RAM (GB)']
+    ostype = dict_data['OSType']
+    osversion = dict_data['OSVersion']
     
     row = f"{name:<10} {mac:<20} {ip:<15} {cpu:<10} {disks:<10} {ram:<10} {ostype:<15} {osversion:<15}"
     print(row)

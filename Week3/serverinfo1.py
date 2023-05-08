@@ -9,7 +9,7 @@ Spring 2023
 
 # Versioning
 # Scott-20230412: initial version
-# Scott-20230416: Fixed disk count to use subprocess instead of psutil  (psutil was not workingin AWS) 
+# Scott-20230416: Fixed disk count to use subprocess instead of psutil  (psutil was not working in AWS) 
 
 # Set up initial variables and imports
 import socket
