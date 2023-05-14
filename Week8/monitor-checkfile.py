@@ -49,7 +49,6 @@ def get_data():
         cursor.execute(sql)
         # Fetch all the rows in a list of lists.
         results = cursor.fetchall()
-        print("\nMySQL Database connection successful")
         return results
     except Exception as e:
         print ("Error: unable to fetch data")
@@ -69,8 +68,9 @@ def check_hashes(dblist):
 
 def compare_hash(target_list):
     previous_hash = target_list[2]
-    #FIX: Add error handling
     current_hash = calculate_md5(target_list[1])
+    if current_hash == "NA":
+        return current_hash, "not found"
     if current_hash != previous_hash:
         return current_hash, "changed"
     elif current_hash == previous_hash:
@@ -81,12 +81,14 @@ def compare_hash(target_list):
 
 def calculate_md5(file_name):
     hash_md5 = hashlib.md5()
-    #FIX: Add error handling
-    with open(file_name, "rb") as file:
-        # Read the file in chunks to handle large files efficiently
-        for chunk in iter(lambda: file.read(4096), b""):
-            hash_md5.update(chunk)
-    return hash_md5.hexdigest()
+    try:
+        with open(file_name, "rb") as file:
+            # Read the file in chunks to handle large files efficiently
+            for chunk in iter(lambda: file.read(4096), b""):
+                hash_md5.update(chunk)
+        return hash_md5.hexdigest()
+    except:
+        return "NA"
 
 
 def create_db_connection(host_name, user_name, user_password, db_name):
@@ -99,7 +101,7 @@ def create_db_connection(host_name, user_name, user_password, db_name):
             passwd=user_password,
             database=db_name
         )
-        print("MySQL Database connection successful")
+        print("\nMySQL Database connection successful")
     except Exception as e:
         print(f"Error: '{e}'")
     return connection
@@ -108,7 +110,7 @@ def create_db_connection(host_name, user_name, user_password, db_name):
 def screen_output(list_data):
     """Function displays dictionary to screen"""
     print()
-    header = f"{'PATH':<50} {'DB_HASH':<35} {'HASH_DATE':<30} {'CURRENT_HASH':<35} {'STATUS':<20}"
+    header = f"{'PATH':<45} {'DB_HASH':<39} {'HASH_DATE':<33} {'CURRENT_HASH':<35} {'STATUS':<20}"
     print(header)
     print('-' * len(header))
     for list in list_data:
@@ -118,7 +120,7 @@ def screen_output(list_data):
         hash_date = list[2]
         current_hash = list[3]
         status = list[4]
-        row = f"{file_path:<50} {db_hash:<35} {hash_date:<30} {current_hash:<35} {status:<20}"
+        row = f"{file_path:<45} {db_hash:<39} {hash_date:<33} {current_hash:<35} {status:<20}"
         print(row)
     print()
 
