@@ -28,7 +28,6 @@ TABLE_NAME = 'file_hashes'
 def main():
     check_argument()
     hash_list = build_list(sys.argv[1])
-    print(hash_list)
     screen_output(hash_list)
     write_to_db(hash_list)
 
@@ -44,7 +43,7 @@ def check_argument():
 
 
 def build_list(file_to_hash):
-    #FIX
+    """Function returns time, path, and hash for target file"""
     file_hash = calculate_md5(file_to_hash)
     path = os.path.abspath(file_to_hash)
     timestamp = datetime.now().isoformat()
@@ -53,6 +52,7 @@ def build_list(file_to_hash):
 
 
 def calculate_md5(file_name):
+    """Function returns md5 hash for file"""
     hash_md5 = hashlib.md5()
     with open(file_name, "rb") as file:
         # Read the file in chunks to handle large files efficiently
@@ -78,8 +78,7 @@ def create_db_connection(host_name, user_name, user_password, db_name):
 
 
 def screen_output(list_data):
-    #FIX: Update headers and associations
-    """Function displays dictionary to screen"""
+    """Function displays list to screen"""
     print()
     header = f"{'TIMESTAMP':<35} {'PATH':<40} {'HASH':<30}"
     print(header)
@@ -94,16 +93,13 @@ def screen_output(list_data):
 
 
 def write_to_db(list_data):
-    """Function inserts data into database"""
-    #FIX: Update Data type
-    #FIX: Assign list values toi variable
+    """Function inserts data into database from list"""
     timestamp = list_data[0]
     path = list_data[1]
     hash = list_data[2]
     connection = create_db_connection(DB_LOCATION, DB_USER, DB_PASS, DB_NAME)
     cursor = connection.cursor()
 
-    #FIX: Alter variables in sql
     sql = f"INSERT INTO {TABLE_NAME}(timestamp, path, hash) \
     VALUES ('%s', '%s', '%s')" % (timestamp, path, hash)
     try:
