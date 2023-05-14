@@ -47,25 +47,32 @@ def read_csv(file):
         return targetlist
 
 def monitor(targetlist):
+    """Function performs monitoring and data output to screen and csv"""
     while monitoring:
         print("\nMonitoring in progress, enter 'kill' to terminate program")
         print()
         header = f"{'TIMESTAMP':<30} {'IP':<20} {'TEST':<10} {'STATUS':10}"
+        fields = ['timestamp', 'IP', 'test', 'status']
         print(header)
-        for target in targetlist:
-            ping_result = pingthis(target)
-            formatted_result = format_result(ping_result)
-            timestamp = formatted_result[0]
-            ip = formatted_result[1]
-            test = formatted_result[2]
-            status = formatted_result[3]
-            row = f"{timestamp:<30} {ip:<20} {test:<10} {status:10}"
-            print(row)
-            #write_to_csv(formatted_result)
-        print("Waiting...")
-        time.sleep(10)
+        with open('updown.csv', 'a') as f:
+            write = csv.writer(f)
+            write.writerow(fields)
+            for target in targetlist:
+                ping_result = pingthis(target)
+                formatted_result = format_result(ping_result)
+                timestamp = formatted_result[0]
+                ip = formatted_result[1]
+                test = formatted_result[2]
+                status = formatted_result[3]
+                screen_row = f"{timestamp:<30} {ip:<20} {test:<10} {status:10}"
+                print(screen_row)
+                csv_row = timestamp, ip, test, status
+                write.writerow(csv_row)
+            print("Waiting...")
+            time.sleep(10)
 
 def format_result(list):
+    """Function formats results into specified output"""
     newlist = []
     timestamp = datetime.now().isoformat()
     ip = list[0]
@@ -79,10 +86,6 @@ def format_result(list):
 
     newlist = timestamp, ip, type, status
     return newlist
-
-def write_to_csv(list):
-    print(list)
-    return
 
 def input_thread():
     """Function waits for user input to exit program using threading"""
