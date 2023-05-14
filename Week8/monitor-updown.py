@@ -58,6 +58,7 @@ def monitor(targetlist):
             header = f"{'TIMESTAMP':<30} {'IP':<20} {'TYPE':<10} {'STATUS':10}"
             print(header)
             for target in targetlist:
+                csv_row = []
                 ping_result = pingthis(target)
                 formatted_result = format_result(ping_result)
                 timestamp = formatted_result[0]
