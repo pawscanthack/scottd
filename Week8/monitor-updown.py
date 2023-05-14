@@ -6,6 +6,7 @@ Bellevue College
 Spring 2023
 """
 # Script will check if the servers in the file servers.csv are up or down every 10 seconds and write the results to updown.csv
+# Enter 'kill' to terminate program
 
 # Scott-20230514: initial version
 
@@ -13,6 +14,7 @@ Spring 2023
 import csv
 import time
 from pinglib import pingthis
+from datetime import datetime
 import threading
 
 TARGET_FILE = "servers.csv"
@@ -22,12 +24,10 @@ monitoring = True
 
 # Main routine that is called when script is run
 def main():
-    print("MAIN PROGRAM")
     file_check(TARGET_FILE)
     target_list = read_csv(TARGET_FILE)
-    print(target_list)
     monitor(target_list)
-    print("EXCITING!")
+    print("Have a great day!")
 
 # Subroutines
 def file_check(file_name):
@@ -48,16 +48,48 @@ def read_csv(file):
 
 def monitor(targetlist):
     while monitoring:
+        print("\nMonitoring in progress, enter 'kill' to terminate program")
+        print()
+        header = f"{'TIMESTAMP':<30} {'IP':<20} {'TEST':<10} {'STATUS':10}"
+        print(header)
         for target in targetlist:
             ping_result = pingthis(target)
-            print(ping_result)
+            formatted_result = format_result(ping_result)
+            timestamp = formatted_result[0]
+            ip = formatted_result[1]
+            test = formatted_result[2]
+            status = formatted_result[3]
+            row = f"{timestamp:<30} {ip:<20} {test:<10} {status:10}"
+            print(row)
+            #write_to_csv(formatted_result)
+        print("Waiting...")
         time.sleep(10)
 
+def format_result(list):
+    newlist = []
+    timestamp = datetime.now().isoformat()
+    ip = list[0]
+    type = "updown"
+    if isinstance(list[1], float):
+        status = "up"
+    elif isinstance(list[1], str):
+        status = "down"
+    else:
+        status = "WTF?"
+
+    newlist = timestamp, ip, type, status
+    return newlist
+
+def write_to_csv(list):
+    print(list)
+    return
+
 def input_thread():
+    """Function waits for user input to exit program using threading"""
     global monitoring
     while True:
         if input().lower() == "kill":
-            print("Terminating program")
+            print("Terminating program...")
             monitoring = False
             break
 
