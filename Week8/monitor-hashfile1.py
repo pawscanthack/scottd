@@ -122,10 +122,10 @@ def write_to_db(data_list, dblist):
     hash = data_list[2]
     for list in dblist:
         if path in list:
-            overwrite = input(f"Hash info for {path} already exists in {TABLE_NAME}. Overwrite? (y/n) ")
+            overwrite = input(f"Hash info for {path} already exists in {TABLE_NAME} table. Overwrite? (y/n) ")
             break
     if overwrite.lower() != "y":
-        print(f"\nExiting without writing to {TABLE_NAME}")
+        print(f"\nExiting without writing to {TABLE_NAME} table")
         return
        
 
@@ -137,7 +137,7 @@ def write_to_db(data_list, dblist):
     try:
         cursor.execute(sql)
         connection.commit()
-        print(f"\nMySQL write to {TABLE_NAME} successful")
+        print(f"\nMySQL write to {TABLE_NAME} table successful")
     except Exception as Error:
         connection.rollback
         print(f"\nMySQL Database update unsuccessful: {Error}")
