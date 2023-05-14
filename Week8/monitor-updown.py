@@ -48,25 +48,25 @@ def read_csv(file):
 
 def monitor(targetlist):
     """Function performs monitoring and data output to screen and csv"""
-    while monitoring:
-        print("\nMonitoring in progress, enter 'kill' to terminate program")
-        print()
-        header = f"{'TIMESTAMP':<30} {'IP':<20} {'TEST':<10} {'STATUS':10}"
-        fields = ['timestamp', 'IP', 'test', 'status']
-        print(header)
-        with open('updown.csv', 'a') as f:
-            write = csv.writer(f)
-            write.writerow(fields)
+    with open('updown.csv', 'a') as f:
+        write = csv.writer(f)
+        fields = ['TIMESTAMP', 'IP', 'TYPE', 'STATUS']
+        write.writerow(fields)
+        while monitoring:
+            print("\nMonitoring in progress, enter 'kill' to terminate program")
+            print()
+            header = f"{'TIMESTAMP':<30} {'IP':<20} {'TYPE':<10} {'STATUS':10}"
+            print(header)
             for target in targetlist:
                 ping_result = pingthis(target)
                 formatted_result = format_result(ping_result)
                 timestamp = formatted_result[0]
                 ip = formatted_result[1]
-                test = formatted_result[2]
+                type = formatted_result[2]
                 status = formatted_result[3]
-                screen_row = f"{timestamp:<30} {ip:<20} {test:<10} {status:10}"
+                screen_row = f"{timestamp:<30} {ip:<20} {type:<10} {status:10}"
                 print(screen_row)
-                csv_row = timestamp, ip, test, status
+                csv_row = timestamp, ip, type, status
                 write.writerow(csv_row)
             print("Waiting...")
             time.sleep(10)
