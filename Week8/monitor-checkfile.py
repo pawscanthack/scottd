@@ -29,8 +29,8 @@ def main():
     db_list = get_data()
     print(len(db_list))
     print(db_list)
-    #results_list = check_hashes(db_list)
-    
+    results_list = check_hashes(db_list)
+    print(results_list)
     #screen_output(results_list)
     #write_to_db(results_list)
 
@@ -45,8 +45,7 @@ def get_data():
     # prepare a cursor object using cursor() method
     cursor = connection.cursor()
     # Prepare SQL query to INSERT a record into the database.
-    #FIX: Update table name
-    sql = "SELECT * FROM file_hashes"
+    sql = f"SELECT * FROM {TABLE_NAME}"
     try:
         # Execute the SQL command
         cursor.execute(sql)
@@ -61,9 +60,31 @@ def get_data():
     connection.close()
 
 
+def check_hashes(dblist):
+    result = []
+    for list in dblist:
+        changed = compare_hash(list)
+        appended_info = list[1], list[2], list[0], changed[0], changed[1]
+        result.append(appended_info)
+    return result
+
+
+def compare_hash(target_list):
+    previous_hash = target_list[2]
+    #FIX: Add error handling
+    current_hash = calculate_md5(target_list[1])
+    if current_hash != previous_hash:
+        return current_hash, "changed"
+    elif current_hash == previous_hash:
+        return current_hash, "unchanged"
+    else:
+        return current_hash, "Error"
+
+
 
 def calculate_md5(file_name):
     hash_md5 = hashlib.md5()
+    #FIX: Add error handling
     with open(file_name, "rb") as file:
         # Read the file in chunks to handle large files efficiently
         for chunk in iter(lambda: file.read(4096), b""):

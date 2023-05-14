@@ -104,7 +104,7 @@ def write_to_db(list_data):
     cursor = connection.cursor()
 
     #FIX: Alter variables in sql
-    sql = "INSERT INTO file_hashes(timestamp, path, hash) \
+    sql = f"INSERT INTO {TABLE_NAME}(timestamp, path, hash) \
     VALUES ('%s', '%s', '%s')" % (timestamp, path, hash)
     try:
         cursor.execute(sql)
