@@ -117,21 +117,29 @@ def screen_output(list_data):
 
 def write_to_db(data_list, dblist):
     """Function inserts data into database from list"""
+    connection = create_db_connection(DB_LOCATION, DB_USER, DB_PASS, DB_NAME)
+    cursor = connection.cursor()
     timestamp = data_list[0]
     path = data_list[1]
     hash = data_list[2]
     for list in dblist:
         if path in list:
-            overwrite = input(f"Hash info for {path} already exists in {TABLE_NAME} table. Overwrite? (y/n) ")
-            break
-    if overwrite.lower() != "y":
-        print(f"\nExiting without writing to {TABLE_NAME} table")
-        return
+            overwrite = input(f"\nHash info for {path} already exists in {TABLE_NAME} table. Overwrite? (y/n) ")
+            if overwrite.lower() != "y":
+                print(f"\nExiting without writing to {TABLE_NAME} table")
+                return
+            if overwrite.lower() == "y":
+                sql = f"DELETE FROM {TABLE_NAME} WHERE path = '{path}'"
+                try:
+                    cursor.execute(sql)
+                    connection.commit()
+                    print(f"\nMySQL delete from {TABLE_NAME} table successful")
+                except Exception as Error:
+                    connection.rollback()
+                    print(f"\nMySQL Database update unsuccessful: {Error}")
+                    connection.close()
+                    return                
        
-
-    connection = create_db_connection(DB_LOCATION, DB_USER, DB_PASS, DB_NAME)
-    cursor = connection.cursor()
-
     sql = f"INSERT INTO {TABLE_NAME}(timestamp, path, hash) \
     VALUES ('%s', '%s', '%s')" % (timestamp, path, hash)
     try:
