@@ -1,0 +1,18 @@
+ubuntu@ip-172-31-27-92:~/ansible$ ansible linux1 -m ping
+linux1 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+ubuntu@ip-172-31-27-92:~/ansible$ ansible linux1 -a "df -h"
+linux1 | CHANGED | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       7.6G  4.2G  3.4G  56% /
+tmpfs           987M  124K  986M   1% /dev/shm
+tmpfs           395M  860K  394M   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+/dev/xvda15     105M  6.1M   99M   6% /boot/efi
+tmpfs           198M  4.0K  198M   1% /run/user/1000
+tmpfs           198M  4.0K  198M   1% /run/user/0

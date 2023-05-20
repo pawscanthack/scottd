@@ -1,0 +1,20 @@
+ubuntu@ip-172-31-27-92:~/ansible$ ansible windows1 -m win_ping
+windows1 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+ubuntu@ip-172-31-27-92:~/ansible$ ansible windows1 -m win_shell -a 'gci c:\'
+windows1 | CHANGED | rc=0 >>
+
+
+    Directory: C:\
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         8/18/2021  11:24 PM                EFI                                                                  
+d-----          5/8/2021   1:20 AM                PerfLogs                                                             
+d-r---         5/19/2023  10:19 PM                Program Files                                                        
+d-----         3/14/2023  10:30 PM                Program Files (x86)                                                  
+d-r---         5/12/2023   6:02 AM                Users                                                                
+d-----         5/19/2023   8:52 PM                Windows    
