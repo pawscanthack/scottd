@@ -1,1 +1,151 @@
 #configmgmt2
+
+    Print the OS of each host:
+
+ubuntu@ip-172-31-27-92:~/SEC444/scottd/ansible/configmgmt2$ ansible linux1 -a "lsb_release -d"
+linux1 | CHANGED | rc=0 >>                                                                                                                                                                                         
+Description:    Ubuntu 22.04.2 LTS                          
+
+ubuntu@ip-172-31-27-92:~/SEC444/scottd/ansible/configmgmt2$ ansible windows1 -m win_shell -a 'systeminfo | findstr /B /C:"OS Name"'                                                                
+windows1 | CHANGED | rc=0 >>                                                                                                                                                                                       
+OS Name:                   Microsoft Windows Server 2022 Datacenter                                                                                                                                                
+                                                                       
+
+    Print the os release of each host:
+
+ubuntu@ip-172-31-27-92:~/SEC444/scottd/ansible/configmgmt2$ ansible linux1 -a "lsb_release -r"
+linux1 | CHANGED | rc=0 >>
+Release:        22.04
+
+ubuntu@ip-172-31-27-92:~/SEC444/scottd/ansible/configmgmt2$ ansible windows1 -m win_shell -a 'systeminfo | findstr /B /C:"OS Version"'                                                                
+windows1 | CHANGED | rc=0 >>                                                                                                                                                                                       
+OS Version:                10.0.20348 N/A Build 20348         
+
+
+    Print the fqdn_ip4 address of each host?
+
+ubuntu@ip-172-31-27-92:~/SEC444/scottd/ansible/configmgmt2$ ansible linux1 -m shell -a 'hostname -f && hostname -I'
+linux1 | CHANGED | rc=0 >>
+ip-172-31-27-92.ec2.internal
+172.31.27.92 
+
+ubuntu@ip-172-31-27-92:~/SEC444/scottd/ansible/configmgmt2$ ansible windows1 -m win_shell -a 'hostname; (Get-NetIPAddress -AddressFamily IPv4 | Where-Object {$_.IPAddress -ne "127.0.0.1"} | Select-Object -ExpandProperty IPAddress)'
+windows1 | CHANGED | rc=0 >>
+EC2AMAZ-VUBTGHH
+172.31.95.75
+
+
+    Print the shell of each host?
+
+ubuntu@ip-172-31-27-92:~/SEC444/scottd/ansible/configmgmt2$ ansible all -m debug -a "var=ansible_shell_type"
+linux1 | SUCCESS => {
+    "ansible_shell_type": "sh"
+}
+windows1 | SUCCESS => {
+    "ansible_shell_type": "powershell"
+}
+
+
+    Run 'ls -l' on the root partition of the linux host only?
+
+ubuntu@ip-172-31-27-92:~/SEC444/scottd/ansible/configmgmt2$ ansible linux1 -a 'ls -l /'
+linux1 | CHANGED | rc=0 >>
+total 64
+lrwxrwxrwx   1 root root     7 Mar 24 20:04 bin -> usr/bin
+drwxr-xr-x   4 root root  4096 Apr 28 14:41 boot
+drwxr-xr-x  15 root root  3200 May 20 17:06 dev
+drwxr-xr-x 103 root root  4096 May  2 21:13 etc
+drwxr-xr-x   3 root root  4096 Apr  5 14:57 home
+lrwxrwxrwx   1 root root     7 Mar 24 20:04 lib -> usr/lib
+lrwxrwxrwx   1 root root     9 Mar 24 20:04 lib32 -> usr/lib32
+lrwxrwxrwx   1 root root     9 Mar 24 20:04 lib64 -> usr/lib64
+lrwxrwxrwx   1 root root    10 Mar 24 20:04 libx32 -> usr/libx32
+drwx------   2 root root 16384 Mar 24 20:06 lost+found
+drwxr-xr-x   2 root root  4096 Mar 24 20:04 media
+drwxr-xr-x   2 root root  4096 Mar 24 20:04 mnt
+drwxr-xr-x   2 root root  4096 Mar 24 20:04 opt
+dr-xr-xr-x 175 root root     0 May 20 17:06 proc
+drwx------   7 root root  4096 May 19 22:09 root
+drwxr-xr-x  27 root root   900 May 20 18:42 run
+lrwxrwxrwx   1 root root     8 Mar 24 20:04 sbin -> usr/sbin
+drwxr-xr-x   8 root root  4096 Mar 24 20:08 snap
+drwxr-xr-x   2 root root  4096 Mar 24 20:04 srv
+dr-xr-xr-x  13 root root     0 May 20 17:06 sys
+drwxrwxrwt  13 root root  4096 May 20 18:42 tmp
+drwxr-xr-x  14 root root  4096 Mar 24 20:04 usr
+drwxr-xr-x  14 root root  4096 May  2 21:00 var
+
+
+    Print the diskusage of each host?
+
+ubuntu@ip-172-31-27-92:~/SEC444/scottd/ansible/configmgmt2$ ansible linux1 -m command -a "df -h / --output=used,avail"
+linux1 | CHANGED | rc=0 >>
+ Used Avail
+ 4.3G  3.4G
+
+
+ubuntu@ip-172-31-27-92:~/SEC444/scottd/ansible/configmgmt2$ ansible windows1 -m win_shell -a 'Get-PSDrive C | Select-Object Used,Free'
+windows1 | CHANGED | rc=0 >>
+
+       Used        Free
+       ----        ----
+18580287488 13629865984
+
+
+    Print the task list for the windows host?
+
+ubuntu@ip-172-31-27-92:~/SEC444/scottd/ansible/configmgmt2$ ansible windows1 -m win_shell -a 'tasklist'
+windows1 | CHANGED | rc=0 >>
+
+Image Name                     PID Session Name        Session#    Mem Usage
+========================= ======== ================ =========== ============
+System Idle Process              0 Services                   0          8 K
+System                           4 Services                   0        144 K
+Registry                       100 Services                   0     63,280 K
+smss.exe                       440 Services                   0      1,256 K
+csrss.exe                      608 Services                   0      6,400 K
+csrss.exe                      692 Console                    1      6,012 K
+wininit.exe                    712 Services                   0      7,216 K
+winlogon.exe                   788 Console                    1     11,408 K
+services.exe                   832 Services                   0      8,980 K
+lsass.exe                      852 Services                   0     16,660 K
+svchost.exe                    956 Services                   0     14,560 K
+
+
+    Create the directory TEST in the root directory of the linux (/) and windows (c:\) hosts?
+
+ubuntu@ip-172-31-27-92:~/SEC444/scottd/ansible/configmgmt2$ ansible linux1 -m file -a "path=/TEST state=directory"
+linux1 | CHANGED => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": true,
+    "gid": 0,
+    "group": "root",
+    "mode": "0755",
+    "owner": "root",
+    "path": "/TEST",
+    "size": 4096,
+    "state": "directory",
+    "uid": 0
+}
+
+ubuntu@ip-172-31-27-92:~/SEC444/scottd/ansible/configmgmt2$ ansible windows1 -m win_file -a "path=C:\TEST state=directory"
+windows1 | CHANGED => {
+    "changed": true
+}
+
+
+    Print out the TEST directory owner on the linux host?
+
+ubuntu@ip-172-31-27-92:~/SEC444/scottd/ansible/configmgmt2$ ansible linux1 -m command -a "stat -c %U /TEST"
+linux1 | CHANGED | rc=0 >>
+root
+
+
+    Print out the TEST directory owner on the windows host?
+
+ubuntu@ip-172-31-27-92:~/SEC444/scottd/ansible/configmgmt2$ ansible windows1 -m win_shell -a "(Get-Acl -Path 'C:\TEST').Owner"
+windows1 | CHANGED | rc=0 >>
+BUILTIN\Administrators
+
