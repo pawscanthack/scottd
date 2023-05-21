@@ -1,0 +1,10 @@
+- hosts: linux1
+  become: yes
+  tasks:
+    - name: Ping Linux host
+      ping:
+
+- hosts: windows1
+  tasks:
+    - name: Ping Windows host
+      win_ping:
