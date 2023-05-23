@@ -1,0 +1,25 @@
+- hosts: windows1
+  tasks:
+    - name: Ping Windows host
+      win_ping:
+    - name: create local user named User1
+      win_user:
+        name: 'User1'
+        password: 'P@ssw0rd1'
+        state: present
+    - name: create a windows group named Group1
+      win_group:
+        name: 'Group1'
+        state: present
+    - name: add User1 to Group1
+      win_group_membership:
+        name: 'Group1'
+        members: 'User1'
+        state: present
+    - name: Share c:\Shared out with only Group1 having access to it
+      win_share:
+        name: Shared
+        path: 'C:\'
+        list: yes
+        full: 'Group1'
+  
