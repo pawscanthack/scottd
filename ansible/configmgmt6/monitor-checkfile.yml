@@ -1,29 +1,41 @@
-
 - hosts: linux1
   become: true
   become_user: root
   vars:
-    custom_msg: "Dont Worry Be Happy!"
-    file_path: "/home/ubuntu/SEC444/scottd/ansible/configmgmt6/test.txt"
-    #last_hash: "a777be51c79c607edd61c8e12cd9b775ddc8a6c6"
-    last_hash: "393371773a76414ec325b22d19cbde04f363c7ac"
+    custom_msg: "Don't Worry Be Happy!"
+    files_to_check:
+      - path: "/etc/hosts"
+        last_hash: "a777be51c79c607edd61c8e12cd9b775ddc8a6c6"
+      - path: "/etc/group"
+        last_hash: "9186ff9e71c30dbe007536ffc95524150c22212c"
+      - path: "/etc/passwd"
+        last_hash: "b45374bda242fcf0e634a18716d2c8b323dd7589"
+      - path: "/etc/ssh/sshd_config"
+        last_hash: "c803c9bb961a9f26b6cbde82bc8a40493eeb1d8c"
+      - path: "/etc/environment"
+        last_hash: "19b12bf7e647f08e5ef55cf266d29b1815294cda"
   tasks:
     - name: Print Greeting
       ansible.builtin.debug:
         msg: "{{ custom_msg }}"
     - name: Get Current Hash
-      stat:
-        path: "{{ file_path }}"
-        get_checksum: 1
-      register: current_hash
+      ansible.builtin.stat:
+        path: "{{ item.path }}"
+        get_checksum: True
+      register: current_hashes
+      loop: "{{ files_to_check }}"
     - name: Print Current Hash to Screen
-      debug:
-        msg: " {{ current_hash.stat.checksum }} "
-    - name: Compare hashes
-      debug:
-        msg: " {{ file_path }} has changed"
-      when: current_hash.stat.checksum != last_hash
+      ansible.builtin.debug:
+        msg: "{{ item.stat.checksum }}"
+      loop: "{{ current_hashes.results }}"
+    - name: Hashes different
+      ansible.builtin.debug:
+        verbosity: 0
+        msg: "Hashes are different for {{ item.item.path }}"
+      loop: "{{ current_hashes.results }}"
+      when: item.stat.checksum != item.item.last_hash
     - name: Hashes same
-      debug:
-        msg: " {{ file_path }} has not changed"
-      when: current_hash.stat.checksum == last_hash 
+      ansible.builtin.debug:
+        msg: "{{ item.stat.path }} has not changed"
+      loop: "{{ current_hashes.results }}"
+      when: item.stat.checksum == item.item.last_hash
