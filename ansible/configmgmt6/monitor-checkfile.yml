@@ -1,0 +1,26 @@
+
+- hosts: linux1
+  become: true
+  become_user: root
+  vars:
+    custom_msg: "Dont Worry Be Happy!"
+    file_path: "/home/ubuntu/SEC444/scottd/ansible/configmgmt6/test.txt"
+    #last_hash: "a777be51c79c607edd61c8e12cd9b775ddc8a6c6"
+    last_hash: "e9f9b899cc7161e1eb0b1e4c042fdfabccf7958c"
+  tasks:
+    - name: Print Greeting
+      ansible.builtin.debug:
+        msg: "{{ custom_msg }}"
+    - name: Get Current Hash
+      stat:
+        path: "{{ file_path }}"
+        get_checksum: 1
+      register: current_hash
+    - name: Print Current Hash to Screen
+      debug:
+        msg: " {{ current_hash.stat.checksum }} "
+    - name: Compare hashes
+      debug:
+        msg: " {{ file_path }} has changed"
+      when: current_hash.stat.checksum != last_hash
+    
