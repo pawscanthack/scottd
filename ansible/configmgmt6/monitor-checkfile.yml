@@ -6,7 +6,7 @@
     custom_msg: "Dont Worry Be Happy!"
     file_path: "/home/ubuntu/SEC444/scottd/ansible/configmgmt6/test.txt"
     #last_hash: "a777be51c79c607edd61c8e12cd9b775ddc8a6c6"
-    last_hash: "e9f9b899cc7161e1eb0b1e4c042fdfabccf7958c"
+    last_hash: "393371773a76414ec325b22d19cbde04f363c7ac"
   tasks:
     - name: Print Greeting
       ansible.builtin.debug:
@@ -23,4 +23,7 @@
       debug:
         msg: " {{ file_path }} has changed"
       when: current_hash.stat.checksum != last_hash
-    
+    - name: Hashes same
+      debug:
+        msg: " {{ file_path }} has not changed"
+      when: current_hash.stat.checksum == last_hash 
