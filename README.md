@@ -2,5 +2,5 @@
   
 SEC444 Class Scripts  
   
-Red Ninja was here  
+Collection of Python and Ansible Scripts for Networking Tasks. 
 
